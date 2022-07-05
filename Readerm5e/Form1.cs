@@ -26,6 +26,10 @@ namespace Readerm5e
             InitializeReaderUriBox();
         }
 
+
+
+
+
         private void button1_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Debug.WriteLine("Click Made");
@@ -57,13 +61,16 @@ namespace Readerm5e
                 objReader.Connect();
                 System.Diagnostics.Debug.WriteLine(JsonConvert.SerializeObject(readerUri));
                 System.Diagnostics.Debug.WriteLine(JsonConvert.SerializeObject(objReader));
-
+                lblEstado.Text = "Conectado";
+                lblEstado.ForeColor = Color.Blue;
                 //objReader.StartReading();
 
                 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                lblEstado.Text = "Desconectado";
+                lblEstado.ForeColor = Color.Red;
 
                 throw;
             }
