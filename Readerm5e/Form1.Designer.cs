@@ -38,6 +38,7 @@
             this.btnStartReading = new System.Windows.Forms.Button();
             this.dtGridResults = new System.Windows.Forms.DataGridView();
             this.EPC = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btnRefresh = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dtGridResults)).BeginInit();
             this.SuspendLayout();
             // 
@@ -45,7 +46,7 @@
             // 
             this.btnConnect.Location = new System.Drawing.Point(12, 12);
             this.btnConnect.Name = "btnConnect";
-            this.btnConnect.Size = new System.Drawing.Size(75, 23);
+            this.btnConnect.Size = new System.Drawing.Size(95, 23);
             this.btnConnect.TabIndex = 0;
             this.btnConnect.Text = "Conectar";
             this.btnConnect.UseVisualStyleBackColor = true;
@@ -63,14 +64,14 @@
             // cmbReaderPort
             // 
             this.cmbReaderPort.FormattingEnabled = true;
-            this.cmbReaderPort.Location = new System.Drawing.Point(93, 12);
+            this.cmbReaderPort.Location = new System.Drawing.Point(113, 13);
             this.cmbReaderPort.Name = "cmbReaderPort";
             this.cmbReaderPort.Size = new System.Drawing.Size(158, 21);
             this.cmbReaderPort.TabIndex = 3;
             // 
             // btnRead1
             // 
-            this.btnRead1.Location = new System.Drawing.Point(380, 12);
+            this.btnRead1.Location = new System.Drawing.Point(489, 12);
             this.btnRead1.Name = "btnRead1";
             this.btnRead1.Size = new System.Drawing.Size(75, 23);
             this.btnRead1.TabIndex = 4;
@@ -108,11 +109,11 @@
             // 
             // btnStartReading
             // 
-            this.btnStartReading.Location = new System.Drawing.Point(268, 12);
+            this.btnStartReading.Location = new System.Drawing.Point(367, 12);
             this.btnStartReading.Name = "btnStartReading";
-            this.btnStartReading.Size = new System.Drawing.Size(106, 23);
+            this.btnStartReading.Size = new System.Drawing.Size(116, 23);
             this.btnStartReading.TabIndex = 8;
-            this.btnStartReading.Text = "Iniciar Lectura";
+            this.btnStartReading.Text = "Iniciar Lecturas";
             this.btnStartReading.UseVisualStyleBackColor = true;
             this.btnStartReading.Click += new System.EventHandler(this.btnStartReading_Click);
             // 
@@ -124,20 +125,32 @@
             this.EPC});
             this.dtGridResults.Location = new System.Drawing.Point(15, 94);
             this.dtGridResults.Name = "dtGridResults";
-            this.dtGridResults.Size = new System.Drawing.Size(440, 197);
+            this.dtGridResults.Size = new System.Drawing.Size(549, 197);
             this.dtGridResults.TabIndex = 9;
             // 
             // EPC
             // 
+            this.EPC.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.EPC.HeaderText = "EPC";
             this.EPC.Name = "EPC";
             this.EPC.ReadOnly = true;
+            // 
+            // btnRefresh
+            // 
+            this.btnRefresh.Location = new System.Drawing.Point(277, 12);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(31, 23);
+            this.btnRefresh.TabIndex = 10;
+            this.btnRefresh.Text = "R";
+            this.btnRefresh.UseVisualStyleBackColor = true;
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(481, 349);
+            this.ClientSize = new System.Drawing.Size(584, 392);
+            this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.dtGridResults);
             this.Controls.Add(this.btnStartReading);
             this.Controls.Add(this.lblEstado);
@@ -167,6 +180,7 @@
         private System.Windows.Forms.Button btnStartReading;
         private System.Windows.Forms.DataGridView dtGridResults;
         private System.Windows.Forms.DataGridViewTextBoxColumn EPC;
+        private System.Windows.Forms.Button btnRefresh;
     }
 }
 

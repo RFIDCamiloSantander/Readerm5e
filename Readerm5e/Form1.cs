@@ -23,20 +23,23 @@ namespace Readerm5e
 {
     public partial class Form1 : Form
     {
-        public delegate void PrintTagReadThread();
+        //Variable para poder delegar funciones
+        Thread MyThread;
 
-        PrintTagReadThread myDelegate;
+        //Lista para almacenar los Tags leidos y que no se repitan
+        List<TagReadDataEventArgs> tagList = new List<TagReadDataEventArgs>();
 
-        
+        //Variable para almacenar temporalmente la respuesta de tag leído
+        TagReadDataEventArgs resp = null;
 
-        BindingSource bindingSource = new BindingSource();
-
-        List<string> tagList = new List<string>();
-
+        //Variable en donde se almacenara el objeto Lector
         Reader objReader = null;
 
         // Boolean variable to check Tcp Client connect or not
         bool clientConnected = false;
+
+        //Booleano para saber si se encuentra leyendo el lector.
+        bool isReading = false;
 
         //Socket for tcp streaming
         List<Socket> tagStreamSock = new List<Socket>();
@@ -61,46 +64,90 @@ namespace Readerm5e
 
         private void btnConnect_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("Click Made");
-
-            try
+            if (btnConnect.Text.ToLower() == "conectar")
             {
-                if (objReader != null)
+                try
                 {
-                    System.Diagnostics.Debug.WriteLine("Entra al IF");
+                    if (objReader != null)
+                    {
+                        objReader.Destroy();
+                        objReader = null;
+                        //ConfigureAntennaBoxes(null);
+                        //ConfigureLogicalAntennaBoxes(null);
+                        //ConfigureProtocols(null);
+                    }
 
-                    objReader.Destroy();
-                    //ConfigureAntennaBoxes(null);
-                    //ConfigureLogicalAntennaBoxes(null);
-                    //ConfigureProtocols(null);
-                }
+                    string readerUri = cmbReaderPort.Text;
 
-                string readerUri = cmbReaderPort.Text;
+                    MatchCollection mc = Regex.Matches(readerUri, @"(?<=\().+?(?=\))");
+                    foreach (Match m in mc)
+                    {
+                        if (!string.IsNullOrWhiteSpace(m.ToString()))
+                            readerUri = m.ToString();
+                    }
 
-                MatchCollection mc = Regex.Matches(readerUri, @"(?<=\().+?(?=\))");
-                foreach (Match m in mc)
-                {
-                    if (!string.IsNullOrWhiteSpace(m.ToString()))
-                        readerUri = m.ToString();
-                }
-
-                objReader = Reader.Create(string.Concat("tmr:///", readerUri));
-                //objReader = Reader.Create("eapi:///com5");
-                objReader.ParamSet("/reader/region/id", Reader.Region.NA);
-                objReader.Connect();
-                System.Diagnostics.Debug.WriteLine(JsonConvert.SerializeObject(readerUri));
-                System.Diagnostics.Debug.WriteLine(JsonConvert.SerializeObject(objReader));
-                lblEstado.Text = "Conectado";
-                lblEstado.ForeColor = Color.Blue;
-                //objReader.StartReading();
+                    objReader = Reader.Create(string.Concat("tmr:///", readerUri));
+                    //objReader = Reader.Create("eapi:///com5");
                 
+                    //Se inicia la conección
+                    objReader.Connect();
+
+                    
+
+                    //Seteamos la region para el lector,
+                    //es necesario setear la region para poder iniciar lecturas
+                    objReader.ParamSet("/reader/region/id", Reader.Region.NA);
+
+
+                    System.Diagnostics.Debug.WriteLine(JsonConvert.SerializeObject(readerUri));
+                    System.Diagnostics.Debug.WriteLine(JsonConvert.SerializeObject(objReader));
+                    lblEstado.Text = "Conectado";
+                    lblEstado.ForeColor = Color.Blue;
+                    btnConnect.Text = "Desconectar";
+                    //objReader.StartReading();
+                
+                }
+                catch (Exception ex)
+                {
+                    lblEstado.Text = "Desconectado";
+                    lblEstado.ForeColor = Color.Red;
+                    System.Diagnostics.Debug.WriteLine(ex);
+                    throw;
+                }
             }
-            catch (Exception ex)
+            else if(btnConnect.Text.ToLower() == "desconectar")
             {
-                lblEstado.Text = "Desconectado";
-                lblEstado.ForeColor = Color.Red;
-                System.Diagnostics.Debug.WriteLine(ex);
-                throw;
+                try
+                {
+                    if (isReading)
+                    {
+                        objReader.StopReading();
+                        objReader.Destroy();
+                        objReader = null;
+                        btnConnect.Text = "Conectar";
+                        lblEstado.Text = "Desconectado";
+                        lblEstado.ForeColor = Color.Red;
+
+                        btnStartReading.Text = "Iniciar Lecturas";
+
+                        isReading = false;
+                    }
+                    else
+                    {
+                        objReader.Destroy();
+                        objReader = null;
+                        btnConnect.Text = "Conectar";
+                        lblEstado.Text = "Desconectado";
+                        lblEstado.ForeColor = Color.Red;
+                    }
+
+                }
+                catch (Exception err)
+                {
+                    System.Diagnostics.Debug.WriteLine(err);
+                    throw;
+
+                }
             }
         }
 
@@ -169,34 +216,58 @@ namespace Readerm5e
                 System.Diagnostics.Debug.WriteLine(tagList);
                 System.Diagnostics.Debug.WriteLine(JsonConvert.SerializeObject(tagList));
             }
-            catch (Exception)
+            catch (Exception err)
             {
-
+                System.Diagnostics.Debug.WriteLine(err);
                 throw;
             }
         }
 
         private void btnStartReading_Click(object sender, EventArgs e)
         {
-           
-                //dtGridResults.Rows.Add("Holiwi");
+            if (btnStartReading.Text.ToLower() == "iniciar lecturas")
+            {
                 try
-                {
-
-                    objReader.ParamSet("/reader/region/id", Reader.Region.NA);
+                {   
+                    //Seteamos la region para el lector,
+                    //es necesario setear la region para poder iniciar lecturas
+                    //objReader.ParamSet("/reader/region/id", Reader.Region.NA);
 
                     objReader.TagRead += PrintTagRead;
 
                     objReader.StartReading();
-                    //bindingSource.DataSource = tagList;
-                    //dtGridResults.DataSource = bindingSource;
+                    btnStartReading.Text = "Detener Lecturas";
+
+                    lblEstado.Text = "Leyendo";
+                    lblEstado.ForeColor = Color.Green;
+
+                    //Cambiamos el estado de isReading
+                    isReading = true;
                 }
-                catch (Exception)
+                catch (Exception err)
                 {
+                    System.Diagnostics.Debug.WriteLine(err);
                     throw;
                 }
+            }
+            else if (btnStartReading.Text.ToLower() == "detener lecturas")
+            {
+                try
+                {
+                    objReader.StopReading();
+                    btnStartReading.Text = "Iniciar Lecturas";
 
+                    lblEstado.Text = "Conectado";
+                    lblEstado.ForeColor = Color.Blue;
 
+                    isReading = false;
+                }
+                catch (Exception err)
+                {
+                    System.Diagnostics.Debug.WriteLine(err);
+                    throw;
+                }
+            }
         }
 
 
@@ -207,133 +278,67 @@ namespace Readerm5e
         /// <param name="read"></param>
         public void PrintTagRead(Object sender, TagReadDataEventArgs e)
         {
-            Application.Current.Dispatcher.BeginInvoke(new ThreadStart(delegate ()
+
+            addRow = new deleAddDataGridRow(addDataGridRow);
+
+            if (!tagList.Exists(tag => tag.TagReadData.EpcString == e.TagReadData.EpcString))
             {
-                //dtGridResults.Rows.Clear();
-                //dtGridResults.Columns.Clear();
+                tagList.Add(e);
+                resp = e;
+                MyThread = new Thread(new ThreadStart(ThreadFunction));
+                MyThread.Start();
                 System.Diagnostics.Debug.WriteLine("Dentro del Thread");
-
-                tagList.Add(e.TagReadData.EpcString);
                 System.Diagnostics.Debug.WriteLine(JsonConvert.SerializeObject( tagList));
-                dtGridResults.Rows.Add("holiwi");
-            }));
+            }
             
-
-
             //Da error pq se manipula el dataGrid desde otro subproceso, no el que lo creo.
             //dtGridResults.Rows.Add(e.TagReadData.EpcString);
-
-
-            //Dispatcher.BeginInvoke(new ThreadStart(delegate ()
-            //{
-            //    if (clientConnected)
-            //    {
-            //        foreach (Socket tempSocket in tagStreamSock)
-            //        {
-            //            if (tempSocket.Connected)
-            //                PrintTagReads(e, tempSocket);
-            //        }
-            //    }
-            //    else if (!isHttpPostServiceEnabled)
-            //    {
-            //        broadcastOFF();
-            //    }
-            //}));
 
         }
 
 
+        public delegate void deleAddDataGridRow();
+        public deleAddDataGridRow addRow;
 
 
-        ///// <summary>
-        ///// Function that processes the Tag Data produced by StartReading();
-        ///// </summary>
-        ///// <param name="read"></param>
-        //void PrintTagRead(Object sender, TagReadDataEventArgs e)
-        //{
-        //    Dispatcher.BeginInvoke(new ThreadStart(delegate ()
-        //    {
-        //        if (clientConnected)
-        //        {
-        //            foreach (Socket tempSocket in tagStreamSock)
-        //            {
-        //                if (tempSocket.Connected)
-        //                    PrintTagReads(e, tempSocket);
-        //            }
-        //        }
-        //        else if (!isHttpPostServiceEnabled)
-        //        {
-        //            broadcastOFF();
-        //        }
-        //    }));
-        //    Dispatcher.BeginInvoke(new ThreadStart(delegate ()
-        //    {
-        //        // Enable the read/stop-reading button when URA is able to connect 
-        //        // to the reader or URA is able to get the tags.
-        //        btnRead.IsEnabled = true;
-        //        tagdb.Add(e.TagReadData);
-        //        //If warning is there, remove it
-        //        if (null != lblWarning.Text)
-        //        {
-        //            string temperature = lblReaderTemperature.Content.ToString().TrimEnd('C', '°');
-        //            if (lblWarning.Text.ToString() != "")
-        //            {
-        //                if (int.Parse(temperature) < 85)
-        //                {
-        //                    lblWarning.Dispatcher.BeginInvoke(new ThreadStart(delegate ()
-        //                    {
-        //                        GUIturnoffWarning();
-        //                    }));
-        //                }
-        //            }
-        //        }
-        //    }));
-        //    Dispatcher.BeginInvoke(new ThreadStart(delegate ()
-        //    {
-        //        txtTotalTagReads.Content = tagdb.TotalTagCount.ToString();
-        //        totalUniqueTagsReadTextBox.Content = tagdb.UniqueTagCount.ToString();
-        //    }
-        //    ));
-        //}
+        public void addDataGridRow()
+        {
+            System.Diagnostics.Debug.WriteLine(JsonConvert.SerializeObject(resp));
+            dtGridResults.Rows.Add(resp.TagReadData.EpcString);
+        }
+
+
+        private void ThreadFunction()
+        {
+            MyThreadClass myThreadClassObject = new MyThreadClass(this);
+            myThreadClassObject.Run();
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            cmbReaderPort.Items.Clear();
+            InitializeReaderUriBox();
+        }
+    }
 
 
 
-        ///// Sending tags to TCP server Through Async read
-        ///// </summary>
-        ///// <param name="e"></param>
-        //void PrintTagReads(TagReadDataEventArgs e, Socket tempSocket)
-        //{
-        //    string data = StreamDataFormat(e.TagReadData);
-        //    Dispatcher.BeginInvoke(DispatcherPriority.Background, new ThreadStart(delegate ()
-        //    {
-        //        byte[] ba = Encoding.ASCII.GetBytes(data);
-        //        var SentBytesLen = 0;
-        //        while (SentBytesLen < ba.Length)
-        //        {
-        //            try
-        //            {
-        //                SentBytesLen += tempSocket.Send(ba.Skip(SentBytesLen).ToArray());
-        //            }
-        //            catch (SocketException ex)
-        //            {
-        //                SentBytesLen = ba.Length;
-        //                DisplayMessageOnStatusBar(ex.Message, Brushes.Red);
-        //            }
-        //        }
-        //    }));
-        //}
 
 
-        ///// <summary>
-        ///// Disables the broadcast status. 
-        ///// </summary
-        //private void broadcastOFF()
-        //{
-        //    Dispatcher.BeginInvoke(new ThreadStart(delegate ()
-        //    {
-        //        imgTcpStreamStatus.Source = new BitmapImage(new Uri(@"..\Icons\broadcast-icon-off.png",
-        //                                    UriKind.RelativeOrAbsolute));
-        //    }));
-        //}
+    public class MyThreadClass
+    {
+        Form1 myFormControl1;
+
+
+        public MyThreadClass(Form1 myForm)
+        {
+            myFormControl1 = myForm;
+        }
+        
+
+        public void Run()
+        {
+            myFormControl1.Invoke(myFormControl1.addRow);
+        }
     }
 }
