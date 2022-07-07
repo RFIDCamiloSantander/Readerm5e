@@ -34,7 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MercuryAPI">
-      <HintPath>C:\Users\demon\Downloads\mercuryapi-YEATS-1.31.4.35-1\mercuryapi-1.31.4.35\cs\MercuryAPI.dll</HintPath>
+      <HintPath>Dlls\MercuryAPI.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -93,6 +93,10 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Dlls\LLRP.dll" />
+    <Content Include="Dlls\MercuryAPI.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
