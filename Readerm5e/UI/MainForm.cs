@@ -18,11 +18,14 @@ using System.Threading;
 using System.Net.Sockets;
 using Cursors = System.Windows.Input.Cursors;
 using Application = System.Windows.Application;
+using Readerm5e.UI;
 
 namespace Readerm5e
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
+        WriteTagForm writeTagForm = new WriteTagForm();
+
         //Variable para poder delegar funciones
         Thread MyThread;
 
@@ -53,7 +56,7 @@ namespace Readerm5e
         TagFilter selectionOnEPC = null;
 
 
-        public Form1()
+        public MainForm()
         {
             InitializeComponent();
             InitializeReaderUriBox();
@@ -319,6 +322,11 @@ namespace Readerm5e
             cmbReaderPort.Items.Clear();
             InitializeReaderUriBox();
         }
+
+        private void btnReWrite_Click(object sender, EventArgs e)
+        {
+            writeTagForm.Show();
+        }
     }
 
 
@@ -327,10 +335,10 @@ namespace Readerm5e
 
     public class MyThreadClass
     {
-        Form1 myFormControl1;
+        MainForm myFormControl1;
 
 
-        public MyThreadClass(Form1 myForm)
+        public MyThreadClass(MainForm myForm)
         {
             myFormControl1 = myForm;
         }

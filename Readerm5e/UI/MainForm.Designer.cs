@@ -1,6 +1,6 @@
 ﻿namespace Readerm5e
 {
-    partial class Form1
+    partial class MainForm
     {
         /// <summary>
         /// Variable del diseñador necesaria.
@@ -39,6 +39,7 @@
             this.dtGridResults = new System.Windows.Forms.DataGridView();
             this.EPC = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnRefresh = new System.Windows.Forms.Button();
+            this.btnReWrite = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dtGridResults)).BeginInit();
             this.SuspendLayout();
             // 
@@ -145,11 +146,22 @@
             this.btnRefresh.UseVisualStyleBackColor = true;
             this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             // 
+            // btnReWrite
+            // 
+            this.btnReWrite.Location = new System.Drawing.Point(488, 313);
+            this.btnReWrite.Name = "btnReWrite";
+            this.btnReWrite.Size = new System.Drawing.Size(75, 23);
+            this.btnReWrite.TabIndex = 11;
+            this.btnReWrite.Text = "Re-escribir";
+            this.btnReWrite.UseVisualStyleBackColor = true;
+            this.btnReWrite.Click += new System.EventHandler(this.btnReWrite_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 392);
+            this.Controls.Add(this.btnReWrite);
             this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.dtGridResults);
             this.Controls.Add(this.btnStartReading);
@@ -181,6 +193,7 @@
         private System.Windows.Forms.DataGridView dtGridResults;
         private System.Windows.Forms.DataGridViewTextBoxColumn EPC;
         private System.Windows.Forms.Button btnRefresh;
+        private System.Windows.Forms.Button btnReWrite;
     }
 }
 
