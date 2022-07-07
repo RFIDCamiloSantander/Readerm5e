@@ -1,5 +1,4 @@
-﻿using System.Windows.Shell;
-using System;
+﻿using System;
 using System.Windows;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,14 +16,20 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Net.Sockets;
 using Cursors = System.Windows.Input.Cursors;
-using Application = System.Windows.Application;
 using Readerm5e.UI;
+using Readerm5e.DAOs;
+using Readerm5e.Models;
 
 namespace Readerm5e
 {
     public partial class MainForm : Form
     {
-        WriteTagForm writeTagForm = new WriteTagForm();
+
+        WriteTagForm writeTagForm;
+
+        EnrollForm enrollForm;
+
+        ReadingsForm readingsForm;
 
         //Variable para poder delegar funciones
         Thread MyThread;
@@ -307,7 +312,16 @@ namespace Readerm5e
         public void addDataGridRow()
         {
             System.Diagnostics.Debug.WriteLine(JsonConvert.SerializeObject(resp));
-            dtGridResults.Rows.Add(resp.TagReadData.EpcString);
+            Element element = ElementDao.ReadElement(resp.TagReadData.EpcString);
+            if (element.EPC != null)
+            {
+                System.Diagnostics.Debug.WriteLine( JsonConvert.SerializeObject( element ));
+                dtGridResults.Rows.Add(element.EPC, element.Name, element.Description);
+            }
+            else
+            {
+                dtGridResults.Rows.Add(resp.TagReadData.EpcString);
+            }
         }
 
 
@@ -325,7 +339,20 @@ namespace Readerm5e
 
         private void btnReWrite_Click(object sender, EventArgs e)
         {
+            writeTagForm = new WriteTagForm(objReader);
             writeTagForm.Show();
+        }
+
+        private void btnEnroll_Click(object sender, EventArgs e)
+        {
+            enrollForm = new EnrollForm(objReader);
+            enrollForm.Show();
+        }
+
+        private void btnReadings_Click(object sender, EventArgs e)
+        {
+            readingsForm = new ReadingsForm();
+            readingsForm.Show();
         }
     }
 

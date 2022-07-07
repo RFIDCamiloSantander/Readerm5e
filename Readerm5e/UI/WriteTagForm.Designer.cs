@@ -30,12 +30,12 @@
         {
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.txtReadEpc = new System.Windows.Forms.TextBox();
             this.txtWriteEpc = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.btnReadEpc = new System.Windows.Forms.Button();
+            this.btnWriteEpc = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.lblResult = new System.Windows.Forms.Label();
+            this.txtReadEpc = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // label1
@@ -56,13 +56,6 @@
             this.label2.TabIndex = 1;
             this.label2.Text = "EPC:";
             // 
-            // txtReadEpc
-            // 
-            this.txtReadEpc.Location = new System.Drawing.Point(49, 61);
-            this.txtReadEpc.Name = "txtReadEpc";
-            this.txtReadEpc.Size = new System.Drawing.Size(197, 20);
-            this.txtReadEpc.TabIndex = 2;
-            // 
             // txtWriteEpc
             // 
             this.txtWriteEpc.Location = new System.Drawing.Point(49, 111);
@@ -70,23 +63,25 @@
             this.txtWriteEpc.Size = new System.Drawing.Size(197, 20);
             this.txtWriteEpc.TabIndex = 3;
             // 
-            // button1
+            // btnReadEpc
             // 
-            this.button1.Location = new System.Drawing.Point(252, 59);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 4;
-            this.button1.Text = "Leer";
-            this.button1.UseVisualStyleBackColor = true;
+            this.btnReadEpc.Location = new System.Drawing.Point(252, 59);
+            this.btnReadEpc.Name = "btnReadEpc";
+            this.btnReadEpc.Size = new System.Drawing.Size(75, 23);
+            this.btnReadEpc.TabIndex = 4;
+            this.btnReadEpc.Text = "Leer";
+            this.btnReadEpc.UseVisualStyleBackColor = true;
+            this.btnReadEpc.Click += new System.EventHandler(this.btnReadEpc_Click);
             // 
-            // button2
+            // btnWriteEpc
             // 
-            this.button2.Location = new System.Drawing.Point(252, 111);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 5;
-            this.button2.Text = "Escribir";
-            this.button2.UseVisualStyleBackColor = true;
+            this.btnWriteEpc.Location = new System.Drawing.Point(252, 109);
+            this.btnWriteEpc.Name = "btnWriteEpc";
+            this.btnWriteEpc.Size = new System.Drawing.Size(75, 23);
+            this.btnWriteEpc.TabIndex = 5;
+            this.btnWriteEpc.Text = "Escribir";
+            this.btnWriteEpc.UseVisualStyleBackColor = true;
+            this.btnWriteEpc.Click += new System.EventHandler(this.btnWriteEpc_Click);
             // 
             // label3
             // 
@@ -106,17 +101,26 @@
             this.lblResult.TabIndex = 7;
             this.lblResult.Text = "Label Resultado";
             // 
+            // txtReadEpc
+            // 
+            this.txtReadEpc.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtReadEpc.Location = new System.Drawing.Point(49, 64);
+            this.txtReadEpc.Name = "txtReadEpc";
+            this.txtReadEpc.ReadOnly = true;
+            this.txtReadEpc.Size = new System.Drawing.Size(197, 13);
+            this.txtReadEpc.TabIndex = 8;
+            // 
             // WriteTagForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(339, 186);
+            this.Controls.Add(this.txtReadEpc);
             this.Controls.Add(this.lblResult);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.btnWriteEpc);
+            this.Controls.Add(this.btnReadEpc);
             this.Controls.Add(this.txtWriteEpc);
-            this.Controls.Add(this.txtReadEpc);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Name = "WriteTagForm";
@@ -130,11 +134,11 @@
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox txtReadEpc;
         private System.Windows.Forms.TextBox txtWriteEpc;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button btnReadEpc;
+        private System.Windows.Forms.Button btnWriteEpc;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label lblResult;
+        private System.Windows.Forms.TextBox txtReadEpc;
     }
 }
