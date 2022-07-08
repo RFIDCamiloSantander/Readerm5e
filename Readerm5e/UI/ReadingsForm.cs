@@ -17,10 +17,18 @@ namespace Readerm5e.UI
         List<Reading> readingsList;
         public ReadingsForm()
         {
-            //readingsList = ReadingsDao.ReadAllReadings();
             InitializeComponent();
+            getReadings();
+            foreach (Reading reading in readingsList)
+            {
 
-            dtGridReadings.Rows.Add("nombre", "EPC");
+                string date = DateTimeOffset.FromUnixTimeSeconds(reading.TimeStamp).ToString();
+                //int cortarString = date.IndexOf("+");
+                date = date.Substring(0, date.IndexOf("+"));
+                
+                System.Diagnostics.Debug.WriteLine(date + " - " + date);
+                dtGridReadings.Rows.Add( reading.ElementoId, reading.ElementoName, date, reading.ElementoDescription );
+            }
         }
 
         public void getReadings()

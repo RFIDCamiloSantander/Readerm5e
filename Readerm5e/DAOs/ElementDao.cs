@@ -19,7 +19,7 @@ namespace Readerm5e.DAOs
             using (SqlConnection Conn = DBC.GetConnection())
             {
                 SqlCommand Comando = new SqlCommand(string.Format(
-                    "INSERT INTO Elements ( epc, Name, Description, CreationDate, Status )" +
+                    "INSERT INTO Element ( epc, Name, Description, CreationDate, Status )" +
                     " VALUES ( '{0}', '{1}', '{2}', '{3}', '{4}' )",
                     Element.EPC, Element.Name, Element.Description, Element.CreationDate, Element.Status), Conn);
 
@@ -38,7 +38,7 @@ namespace Readerm5e.DAOs
             {
                 Element Element = new Element();
 
-                SqlCommand Comando = new SqlCommand(string.Format("SELECT * FROM Elements WHERE Epc = {0};", epc), Conn);
+                SqlCommand Comando = new SqlCommand(string.Format("SELECT * FROM Element WHERE Epc = {0};", epc), Conn);
 
                 SqlDataReader Reader = Comando.ExecuteReader();
 
@@ -65,7 +65,7 @@ namespace Readerm5e.DAOs
             {
                 Element Element = new Element();
 
-                SqlCommand Comando = new SqlCommand(string.Format("SELECT * FROM Elements WHERE ID = {0};", id), Conn);
+                SqlCommand Comando = new SqlCommand(string.Format("SELECT * FROM Element WHERE ID = {0};", id), Conn);
 
                 SqlDataReader Reader = Comando.ExecuteReader();
 

@@ -10,8 +10,12 @@ namespace Readerm5e.Models
     {
         public int Id { get; set; }
 
+        public long TimeStamp { get; set; }
+
         public int ElementoId { get; set; }
 
-        public string TimeStamp { get; set; }
+        public string ElementoName { get; set; }
+
+        public string ElementoDescription { get; set; }
     }
 }

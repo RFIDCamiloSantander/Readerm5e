@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -45,6 +44,9 @@ namespace Readerm5e
 
         // Boolean variable to check Tcp Client connect or not
         bool clientConnected = false;
+
+        //Booleano para saber si se encuentra conectado al lector.
+        bool isConnected = false;
 
         //Booleano para saber si se encuentra leyendo el lector.
         bool isReading = false;
@@ -99,7 +101,7 @@ namespace Readerm5e
                 
                     //Se inicia la conección
                     objReader.Connect();
-
+                    isConnected = true;
                     
 
                     //Seteamos la region para el lector,
@@ -120,6 +122,7 @@ namespace Readerm5e
                     lblEstado.Text = "Desconectado";
                     lblEstado.ForeColor = Color.Red;
                     System.Diagnostics.Debug.WriteLine(ex);
+                    isConnected = false;
                     throw;
                 }
             }
@@ -139,6 +142,7 @@ namespace Readerm5e
                         btnStartReading.Text = "Iniciar Lecturas";
 
                         isReading = false;
+                        isConnected = false;
                     }
                     else
                     {
@@ -147,6 +151,7 @@ namespace Readerm5e
                         btnConnect.Text = "Conectar";
                         lblEstado.Text = "Desconectado";
                         lblEstado.ForeColor = Color.Red;
+                        isConnected = false;
                     }
 
                 }
@@ -208,73 +213,92 @@ namespace Readerm5e
 
         private void btnRead_Click(object sender, EventArgs e)
         {
-            try
-            {
-                TagReadData[] tagList = objReader.Read(100);
 
-                foreach (TagReadData tag in tagList)
-                {
-                    System.Diagnostics.Debug.WriteLine("EPC: " + tag.EpcString);
-                    System.Diagnostics.Debug.WriteLine("prd: " + JsonConvert.SerializeObject(tag.prd));
-                    System.Diagnostics.Debug.WriteLine("Data: " + JsonConvert.SerializeObject(tag.Data));
-                    System.Diagnostics.Debug.WriteLine("Tag: " + tag.Tag);
-                    System.Diagnostics.Debug.WriteLine("Tag: " + tag.ReadCount);
-                    lblEPC.Text = tag.EpcString;
-                }
-                System.Diagnostics.Debug.WriteLine(tagList);
-                System.Diagnostics.Debug.WriteLine(JsonConvert.SerializeObject(tagList));
-            }
-            catch (Exception err)
+            if (isConnected)
             {
-                System.Diagnostics.Debug.WriteLine(err);
-                throw;
+                try
+                {
+                    TagReadData[] tagList = objReader.Read(100);
+
+                    foreach (TagReadData tag in tagList)
+                    {
+                        System.Diagnostics.Debug.WriteLine("EPC: " + tag.EpcString);
+                        System.Diagnostics.Debug.WriteLine("prd: " + JsonConvert.SerializeObject(tag.prd));
+                        System.Diagnostics.Debug.WriteLine("Data: " + JsonConvert.SerializeObject(tag.Data));
+                        System.Diagnostics.Debug.WriteLine("Tag: " + tag.Tag);
+                        System.Diagnostics.Debug.WriteLine("Tag: " + tag.ReadCount);
+                        lblEPC.Text = tag.EpcString;
+                    }
+                    System.Diagnostics.Debug.WriteLine(tagList);
+                    System.Diagnostics.Debug.WriteLine(JsonConvert.SerializeObject(tagList));
+                }
+                catch (Exception err)
+                {
+                    System.Diagnostics.Debug.WriteLine(err);
+                    throw;
+                }
             }
+            else
+            {
+                MessageBox.Show("Necesita estar 'CONECTADO' para leer y/o escribir.");
+            }
+
         }
 
         private void btnStartReading_Click(object sender, EventArgs e)
         {
-            if (btnStartReading.Text.ToLower() == "iniciar lecturas")
+            if (isConnected)
             {
-                try
-                {   
-                    //Seteamos la region para el lector,
-                    //es necesario setear la region para poder iniciar lecturas
-                    //objReader.ParamSet("/reader/region/id", Reader.Region.NA);
-
-                    objReader.TagRead += PrintTagRead;
-
-                    objReader.StartReading();
-                    btnStartReading.Text = "Detener Lecturas";
-
-                    lblEstado.Text = "Leyendo";
-                    lblEstado.ForeColor = Color.Green;
-
-                    //Cambiamos el estado de isReading
-                    isReading = true;
-                }
-                catch (Exception err)
+                if (btnStartReading.Text.ToLower() == "iniciar lecturas")
                 {
-                    System.Diagnostics.Debug.WriteLine(err);
-                    throw;
+                    try
+                    {   
+                        //Seteamos la region para el lector,
+                        //es necesario setear la region para poder iniciar lecturas
+                        //objReader.ParamSet("/reader/region/id", Reader.Region.NA);
+
+                        objReader.TagRead += PrintTagRead;
+
+                        objReader.StartReading();
+                        btnStartReading.Text = "Detener Lecturas";
+
+                        lblEstado.Text = "Leyendo";
+                        lblEstado.ForeColor = Color.Green;
+
+                        //Cambiamos el estado de isReading
+                        isReading = true;
+                    }
+                    catch (Exception err)
+                    {
+                        System.Diagnostics.Debug.WriteLine(err);
+                        throw;
+                    }
                 }
+                else if (btnStartReading.Text.ToLower() == "detener lecturas")
+                {
+                    try
+                    {
+                        objReader.TagRead -= PrintTagRead;
+                        objReader.StopReading();
+                        btnStartReading.Text = "Iniciar Lecturas";
+
+                        lblEstado.Text = "Conectado";
+                        lblEstado.ForeColor = Color.Blue;
+
+                        isReading = false;
+                        tagList.Clear();
+                    }
+                    catch (Exception err)
+                    {
+                        System.Diagnostics.Debug.WriteLine(err);
+                        throw;
+                    }
+                }
+
             }
-            else if (btnStartReading.Text.ToLower() == "detener lecturas")
+            else
             {
-                try
-                {
-                    objReader.StopReading();
-                    btnStartReading.Text = "Iniciar Lecturas";
-
-                    lblEstado.Text = "Conectado";
-                    lblEstado.ForeColor = Color.Blue;
-
-                    isReading = false;
-                }
-                catch (Exception err)
-                {
-                    System.Diagnostics.Debug.WriteLine(err);
-                    throw;
-                }
+                MessageBox.Show("Necesita estar 'CONECTADO' para leer y/o escribir.");
             }
         }
 
@@ -292,19 +316,33 @@ namespace Readerm5e
 
             if (!tagList.Exists(tag => tag.TagReadData.EpcString == e.TagReadData.EpcString))
             {
-                //Tengo que hacer el if para que se elimine el epc de la lista si ya pasaron mas de 5 segs.
-                if (true)
-                {
-
-                }
-
-
                 tagList.Add(e);
                 resp = e;
                 MyThread = new Thread(new ThreadStart(ThreadFunction));
                 MyThread.Start();
-                System.Diagnostics.Debug.WriteLine("Dentro del Thread");
-                System.Diagnostics.Debug.WriteLine(JsonConvert.SerializeObject( tagList));
+                //System.Diagnostics.Debug.WriteLine("Dentro del Thread");
+                //System.Diagnostics.Debug.WriteLine(JsonConvert.SerializeObject( tagList));
+            }
+            else
+            {
+                TagReadDataEventArgs tag = tagList.Find( t => t.TagReadData.EpcString == e.TagReadData.EpcString);
+
+                //Tengo que hacer el if para que se elimine el epc de la lista si ya pasaron mas de 5 segs.
+                if (DateTime.Compare(tag.TagReadData.Time.AddSeconds(5), e.TagReadData.Time) < 0)
+                {
+                    tagList.Remove(tag);
+                    tagList.Add(e);
+
+                    resp = e;
+
+                    MyThread = new Thread(new ThreadStart(ThreadFunction));
+                    MyThread.Start();
+
+                    //DateTime time = tag.TagReadData.Time;
+                    //System.Diagnostics.Debug.WriteLine(tag.TagReadData.Time);
+                    //System.Diagnostics.Debug.WriteLine( "el tag" + JsonConvert.SerializeObject( tag ) );
+
+                }
             }
             
             //Da error pq se manipula el dataGrid desde otro subproceso, no el que lo creo.
@@ -323,18 +361,21 @@ namespace Readerm5e
             Element element = ElementDao.ReadElement(resp.TagReadData.EpcString);
             if (element.EPC != null)
             {
-                System.Diagnostics.Debug.WriteLine( JsonConvert.SerializeObject( element ));
+                //System.Diagnostics.Debug.WriteLine( JsonConvert.SerializeObject( element ));
                 dtGridResults.Rows.Add(element.EPC, element.Name, element.Description);
                 Reading reading = new Reading()
                 {
                     ElementoId = element.Id,
-                    TimeStamp = GetTimestamp(DateTime.Now)
+                    //TimeStamp = GetTimestamp(DateTime.Now)
+                    TimeStamp = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds()
                 };
                 ReadingsDao.CreateReading(reading);
+                //resp = null;
             }
             else
             {
                 dtGridResults.Rows.Add(resp.TagReadData.EpcString);
+                //resp = null;
             }
         }
 
@@ -360,20 +401,39 @@ namespace Readerm5e
 
         private void btnReWrite_Click(object sender, EventArgs e)
         {
-            writeTagForm = new WriteTagForm(objReader);
-            writeTagForm.Show();
+            if (isConnected)
+            {
+                writeTagForm = new WriteTagForm(objReader);
+                writeTagForm.Show();
+            }
+            else
+            {
+                MessageBox.Show("Necesita estar 'CONECTADO' para leer y/o escribir.");
+            }
         }
 
         private void btnEnroll_Click(object sender, EventArgs e)
         {
-            enrollForm = new EnrollForm(objReader);
-            enrollForm.Show();
+            if (isConnected)
+            {
+                enrollForm = new EnrollForm(objReader);
+                enrollForm.Show();
+            }
+            else
+            {
+                MessageBox.Show("Necesita estar 'CONECTADO' para leer y/o escribir.");
+            }
         }
 
         private void btnReadings_Click(object sender, EventArgs e)
         {
             readingsForm = new ReadingsForm();
             readingsForm.Show();
+        }
+
+        private void btnLimpiarTabla_Click(object sender, EventArgs e)
+        {
+            dtGridResults.Rows.Clear();
         }
     }
 

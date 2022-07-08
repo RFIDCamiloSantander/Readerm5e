@@ -44,6 +44,7 @@
             this.btnReWrite = new System.Windows.Forms.Button();
             this.btnEnroll = new System.Windows.Forms.Button();
             this.btnReadings = new System.Windows.Forms.Button();
+            this.btnLimpiarTabla = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dtGridResults)).BeginInit();
             this.SuspendLayout();
             // 
@@ -87,7 +88,7 @@
             // lblEPC
             // 
             this.lblEPC.AutoSize = true;
-            this.lblEPC.Location = new System.Drawing.Point(52, 68);
+            this.lblEPC.Location = new System.Drawing.Point(52, 51);
             this.lblEPC.Name = "lblEPC";
             this.lblEPC.Size = new System.Drawing.Size(0, 13);
             this.lblEPC.TabIndex = 5;
@@ -130,8 +131,9 @@
             this.EPC,
             this.Nombre,
             this.Descripcion});
-            this.dtGridResults.Location = new System.Drawing.Point(15, 68);
+            this.dtGridResults.Location = new System.Drawing.Point(12, 68);
             this.dtGridResults.Name = "dtGridResults";
+            this.dtGridResults.RowHeadersVisible = false;
             this.dtGridResults.Size = new System.Drawing.Size(549, 237);
             this.dtGridResults.TabIndex = 9;
             // 
@@ -161,9 +163,9 @@
             // 
             this.btnRefresh.Location = new System.Drawing.Point(298, 12);
             this.btnRefresh.Name = "btnRefresh";
-            this.btnRefresh.Size = new System.Drawing.Size(31, 23);
+            this.btnRefresh.Size = new System.Drawing.Size(63, 23);
             this.btnRefresh.TabIndex = 10;
-            this.btnRefresh.Text = "R";
+            this.btnRefresh.Text = "Refrescar";
             this.btnRefresh.UseVisualStyleBackColor = true;
             this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             // 
@@ -197,11 +199,22 @@
             this.btnReadings.UseVisualStyleBackColor = true;
             this.btnReadings.Click += new System.EventHandler(this.btnReadings_Click);
             // 
+            // btnLimpiarTabla
+            // 
+            this.btnLimpiarTabla.Location = new System.Drawing.Point(570, 281);
+            this.btnLimpiarTabla.Name = "btnLimpiarTabla";
+            this.btnLimpiarTabla.Size = new System.Drawing.Size(75, 23);
+            this.btnLimpiarTabla.TabIndex = 14;
+            this.btnLimpiarTabla.Text = "Limpiar";
+            this.btnLimpiarTabla.UseVisualStyleBackColor = true;
+            this.btnLimpiarTabla.Click += new System.EventHandler(this.btnLimpiarTabla_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(652, 354);
+            this.Controls.Add(this.btnLimpiarTabla);
             this.Controls.Add(this.btnReadings);
             this.Controls.Add(this.btnEnroll);
             this.Controls.Add(this.btnReWrite);
@@ -241,6 +254,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Nombre;
         private System.Windows.Forms.DataGridViewTextBoxColumn Descripcion;
         private System.Windows.Forms.Button btnReadings;
+        private System.Windows.Forms.Button btnLimpiarTabla;
     }
 }
 
