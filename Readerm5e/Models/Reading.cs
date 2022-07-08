@@ -11,5 +11,7 @@ namespace Readerm5e.Models
         public int Id { get; set; }
 
         public int ElementoId { get; set; }
+
+        public string TimeStamp { get; set; }
     }
 }

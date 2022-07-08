@@ -22,5 +22,10 @@ namespace Readerm5e.UI
 
             dtGridReadings.Rows.Add("nombre", "EPC");
         }
+
+        public void getReadings()
+        {
+            readingsList = ReadingsDao.ReadAllReadings();
+        }
     }
 }

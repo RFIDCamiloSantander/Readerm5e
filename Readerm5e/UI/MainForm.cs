@@ -289,8 +289,16 @@ namespace Readerm5e
 
             addRow = new deleAddDataGridRow(addDataGridRow);
 
+
             if (!tagList.Exists(tag => tag.TagReadData.EpcString == e.TagReadData.EpcString))
             {
+                //Tengo que hacer el if para que se elimine el epc de la lista si ya pasaron mas de 5 segs.
+                if (true)
+                {
+
+                }
+
+
                 tagList.Add(e);
                 resp = e;
                 MyThread = new Thread(new ThreadStart(ThreadFunction));
@@ -317,6 +325,12 @@ namespace Readerm5e
             {
                 System.Diagnostics.Debug.WriteLine( JsonConvert.SerializeObject( element ));
                 dtGridResults.Rows.Add(element.EPC, element.Name, element.Description);
+                Reading reading = new Reading()
+                {
+                    ElementoId = element.Id,
+                    TimeStamp = GetTimestamp(DateTime.Now)
+                };
+                ReadingsDao.CreateReading(reading);
             }
             else
             {
@@ -329,6 +343,13 @@ namespace Readerm5e
         {
             MyThreadClass myThreadClassObject = new MyThreadClass(this);
             myThreadClassObject.Run();
+        }
+
+
+        //Para convertir en TimeStamp.
+        public static string GetTimestamp(DateTime value)
+        {
+            return value.ToString("yyyyMMddHHmmssffff");
         }
 
         private void btnRefresh_Click(object sender, EventArgs e)

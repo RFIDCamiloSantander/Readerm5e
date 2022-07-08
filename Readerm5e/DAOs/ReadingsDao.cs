@@ -38,5 +38,25 @@ namespace Readerm5e.DAOs
 
             return ListReadings;
         }
+
+
+        public static int CreateReading(Reading Reading)
+        {
+            int rsp;
+
+            using (SqlConnection Conn = DBC.GetConnection())
+            {
+                SqlCommand Comando = new SqlCommand(string.Format(
+                    "INSERT INTO Reading (IdElemento, TimeStamp)" +
+                    " VALUES ( '{0}', '{1}' )",
+                    Reading.ElementoId, Reading.TimeStamp ), Conn);
+
+                rsp = Comando.ExecuteNonQuery();
+
+                Conn.Close();
+            }
+
+            return rsp;
+        }
     }
 }
