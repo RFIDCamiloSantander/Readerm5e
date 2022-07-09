@@ -55,6 +55,8 @@ namespace Readerm5e.DAOs
         {
             int rsp;
 
+            System.Diagnostics.Debug.WriteLine(Reading);
+
             using (SqlConnection Conn = DBC.GetConnection())
             {
                 SqlCommand Comando = new SqlCommand(string.Format(

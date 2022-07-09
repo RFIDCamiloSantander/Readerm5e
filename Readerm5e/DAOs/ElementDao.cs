@@ -38,7 +38,7 @@ namespace Readerm5e.DAOs
             {
                 Element Element = new Element();
 
-                SqlCommand Comando = new SqlCommand(string.Format("SELECT * FROM Element WHERE Epc = {0};", epc), Conn);
+                SqlCommand Comando = new SqlCommand(string.Format("SELECT * FROM Element WHERE Epc = '{0}';", epc), Conn);
 
                 SqlDataReader Reader = Comando.ExecuteReader();
 
@@ -83,6 +83,38 @@ namespace Readerm5e.DAOs
 
                 return Element;
             }
+        }
+
+
+
+        public static List<Element> ReadAllElements()
+        {
+            List<Element> ListElements = new List<Element>();
+
+            using (SqlConnection Conn = DBC.GetConnection())
+            {
+                SqlCommand Comando = new SqlCommand(string.Format("SELECT * FROM Element;"), Conn);
+
+                SqlDataReader Reader = Comando.ExecuteReader();
+
+                while (Reader.Read())
+                {
+                    Element Element = new Element();
+
+                    Element.Id = Reader.GetInt32(0);
+                    Element.EPC = Reader.GetString(1);
+                    Element.Name = Reader.GetString(2);
+                    Element.Description = Reader.GetString(3);
+                    Element.CreationDate = Reader.GetString(4);
+                    Element.Status = Reader.GetString(5);
+
+                    ListElements.Add(Element);
+                }
+
+                Conn.Close();
+            }
+
+            return ListElements;
         }
     }
 }

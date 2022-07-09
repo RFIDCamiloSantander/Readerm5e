@@ -11,7 +11,11 @@ namespace Readerm5e.BaseDatos
     {
         public static SqlConnection GetConnection()
         {
-            SqlConnection Conn = new SqlConnection("Data source=localhost; Initial Catalog=m5eReader; User Id=sa; Password=sql987;");
+            //Original
+            //SqlConnection Conn = new SqlConnection("Data source=localhost; Initial Catalog=m5eReader; User Id=sa; Password=sql987;");
+
+
+            SqlConnection Conn = new SqlConnection("Data source=localhost; Initial Catalog=m5eReader; Trusted_Connection=True;");
             Conn.Open();
             return Conn;
         }

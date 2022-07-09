@@ -30,6 +30,8 @@ namespace Readerm5e
 
         ReadingsForm readingsForm;
 
+        ElementsForm elementForm;
+
         //Variable para poder delegar funciones
         Thread MyThread;
 
@@ -43,7 +45,7 @@ namespace Readerm5e
         Reader objReader = null;
 
         // Boolean variable to check Tcp Client connect or not
-        bool clientConnected = false;
+        //bool clientConnected = false;
 
         //Booleano para saber si se encuentra conectado al lector.
         bool isConnected = false;
@@ -55,12 +57,12 @@ namespace Readerm5e
         List<Socket> tagStreamSock = new List<Socket>();
 
         //boolean variable to check Http post is enabled or not
-        bool isHttpPostServiceEnabled = false;
+        //bool isHttpPostServiceEnabled = false;
 
         /// <summary>
         /// Define a variable for selection criteria
         /// </summary>
-        TagFilter selectionOnEPC = null;
+        //TagFilter selectionOnEPC = null;
 
 
         public MainForm()
@@ -229,8 +231,8 @@ namespace Readerm5e
                         System.Diagnostics.Debug.WriteLine("Tag: " + tag.ReadCount);
                         lblEPC.Text = tag.EpcString;
                     }
-                    System.Diagnostics.Debug.WriteLine(tagList);
-                    System.Diagnostics.Debug.WriteLine(JsonConvert.SerializeObject(tagList));
+                    //System.Diagnostics.Debug.WriteLine(tagList);
+                    //System.Diagnostics.Debug.WriteLine(JsonConvert.SerializeObject(tagList));
                 }
                 catch (Exception err)
                 {
@@ -357,7 +359,7 @@ namespace Readerm5e
 
         public void addDataGridRow()
         {
-            System.Diagnostics.Debug.WriteLine(JsonConvert.SerializeObject(resp));
+            System.Diagnostics.Debug.WriteLine(JsonConvert.SerializeObject("entra a dataGrid" + resp));
             Element element = ElementDao.ReadElement(resp.TagReadData.EpcString);
             if (element.EPC != null)
             {
@@ -434,6 +436,12 @@ namespace Readerm5e
         private void btnLimpiarTabla_Click(object sender, EventArgs e)
         {
             dtGridResults.Rows.Clear();
+        }
+
+        private void btnElementos_Click(object sender, EventArgs e)
+        {
+            elementForm = new ElementsForm(objReader);
+            elementForm.Show();
         }
     }
 

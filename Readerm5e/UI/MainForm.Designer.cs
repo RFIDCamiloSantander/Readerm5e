@@ -45,6 +45,7 @@
             this.btnEnroll = new System.Windows.Forms.Button();
             this.btnReadings = new System.Windows.Forms.Button();
             this.btnLimpiarTabla = new System.Windows.Forms.Button();
+            this.btnElementos = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dtGridResults)).BeginInit();
             this.SuspendLayout();
             // 
@@ -171,7 +172,7 @@
             // 
             // btnReWrite
             // 
-            this.btnReWrite.Location = new System.Drawing.Point(570, 68);
+            this.btnReWrite.Location = new System.Drawing.Point(570, 13);
             this.btnReWrite.Name = "btnReWrite";
             this.btnReWrite.Size = new System.Drawing.Size(75, 23);
             this.btnReWrite.TabIndex = 11;
@@ -181,7 +182,7 @@
             // 
             // btnEnroll
             // 
-            this.btnEnroll.Location = new System.Drawing.Point(570, 97);
+            this.btnEnroll.Location = new System.Drawing.Point(570, 68);
             this.btnEnroll.Name = "btnEnroll";
             this.btnEnroll.Size = new System.Drawing.Size(75, 23);
             this.btnEnroll.TabIndex = 12;
@@ -191,7 +192,7 @@
             // 
             // btnReadings
             // 
-            this.btnReadings.Location = new System.Drawing.Point(570, 12);
+            this.btnReadings.Location = new System.Drawing.Point(570, 126);
             this.btnReadings.Name = "btnReadings";
             this.btnReadings.Size = new System.Drawing.Size(75, 23);
             this.btnReadings.TabIndex = 13;
@@ -209,11 +210,22 @@
             this.btnLimpiarTabla.UseVisualStyleBackColor = true;
             this.btnLimpiarTabla.Click += new System.EventHandler(this.btnLimpiarTabla_Click);
             // 
+            // btnElementos
+            // 
+            this.btnElementos.Location = new System.Drawing.Point(570, 97);
+            this.btnElementos.Name = "btnElementos";
+            this.btnElementos.Size = new System.Drawing.Size(75, 23);
+            this.btnElementos.TabIndex = 15;
+            this.btnElementos.Text = "Elementos";
+            this.btnElementos.UseVisualStyleBackColor = true;
+            this.btnElementos.Click += new System.EventHandler(this.btnElementos_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(652, 354);
+            this.Controls.Add(this.btnElementos);
             this.Controls.Add(this.btnLimpiarTabla);
             this.Controls.Add(this.btnReadings);
             this.Controls.Add(this.btnEnroll);
@@ -255,6 +267,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Descripcion;
         private System.Windows.Forms.Button btnReadings;
         private System.Windows.Forms.Button btnLimpiarTabla;
+        private System.Windows.Forms.Button btnElementos;
     }
 }
 
