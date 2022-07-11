@@ -46,9 +46,21 @@ namespace Readerm5e.UI
         private void dtGridElements_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
-            System.Diagnostics.Debug.WriteLine("rowClickadc");
-            editElementForm = new EditElementForm(objReader);
-            editElementForm.Show();
+            //System.Diagnostics.Debug.WriteLine("rowClickadc");
+            //System.Diagnostics.Debug.WriteLine(e.ColumnIndex.ToString());
+            //System.Diagnostics.Debug.WriteLine(dtGridElements.Rows[e.RowIndex].Cells[2].Value.ToString() );
+
+
+            DataGridViewRow row = dtGridElements.Rows[e.RowIndex];
+            
+            
+            editElementForm = new EditElementForm(objReader, row);
+            editElementForm.ShowDialog();
+
+            dtGridElements.Rows.Clear();
+            getElements();
+            populateDataGridElement();
+
         }
     }
 }

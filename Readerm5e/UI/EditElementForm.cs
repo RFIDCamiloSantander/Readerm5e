@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Readerm5e.DAOs;
+using Readerm5e.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -14,10 +16,16 @@ namespace Readerm5e.UI
     public partial class EditElementForm : Form
     {
         Reader objReader;
-        public EditElementForm(Reader pObjReader)
+
+        DataGridViewRow row;
+        public EditElementForm(Reader pObjReader, DataGridViewRow pRow)
         {
+            row = pRow;
             objReader = pObjReader;
             InitializeComponent();
+            txtEpc.Text = pRow.Cells[0].Value.ToString();
+            txtName.Text = pRow.Cells[1].Value.ToString();
+            txtDescription.Text = pRow.Cells[2].Value.ToString();
         }
 
         private void btnLeerEpc_Click(object sender, EventArgs e)
@@ -30,13 +38,42 @@ namespace Readerm5e.UI
                 {
                     txtEpc.Text = tag.EpcString;
                 }
-                //System.Diagnostics.Debug.WriteLine(tagList);
-                //System.Diagnostics.Debug.WriteLine(JsonConvert.SerializeObject(tagList));
             }
             catch (Exception err)
             {
                 System.Diagnostics.Debug.WriteLine(err);
                 throw;
+            }
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            Element element = ElementDao.ReadElement(row.Cells[0].Value.ToString());
+            if (element != null)
+            {
+                try
+                {
+                    element.EPC = txtEpc.Text;
+                    element.Name = txtName.Text;
+                    element.Description = txtDescription.Text;
+
+                    int rsp = ElementDao.UpdateElement(element);
+                    if (rsp > 0)
+                    {
+                        MessageBox.Show("Elemento editado con Exito");
+                        this.Close();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Hubo problemas al editar el elemento");
+                    }
+                }
+                catch (Exception err)
+                {
+                    MessageBox.Show(err.Message);
+                    System.Diagnostics.Debug.WriteLine(err);
+                    throw;
+                }
             }
         }
     }

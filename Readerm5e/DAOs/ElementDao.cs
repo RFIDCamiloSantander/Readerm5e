@@ -19,7 +19,7 @@ namespace Readerm5e.DAOs
             using (SqlConnection Conn = DBC.GetConnection())
             {
                 SqlCommand Comando = new SqlCommand(string.Format(
-                    "INSERT INTO Element ( epc, Name, Description, CreationDate, Status )" +
+                    "INSERT INTO Element ( Epc, Name, Description, CreationDate, Status )" +
                     " VALUES ( '{0}', '{1}', '{2}', '{3}', '{4}' )",
                     Element.EPC, Element.Name, Element.Description, Element.CreationDate, Element.Status), Conn);
 
@@ -115,6 +115,27 @@ namespace Readerm5e.DAOs
             }
 
             return ListElements;
+        }
+
+
+
+        public static int UpdateElement(Element pElement)
+        {
+            using (SqlConnection Conn = DBC.GetConnection())
+            {
+                int rsp = 0;
+
+                SqlCommand Comando = new SqlCommand(string.Format(
+                    "UPDATE Element SET Epc = '{0}', Name = '{1}', Description = '{2}', Status = '{3}' WHERE ID = {4};",
+                    pElement.EPC, pElement.Name, pElement.Description, pElement.Status, pElement.Id),
+                Conn);
+
+                rsp = Comando.ExecuteNonQuery();
+
+                Conn.Close();
+
+                return rsp;
+            }
         }
     }
 }

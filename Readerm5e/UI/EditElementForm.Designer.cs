@@ -35,7 +35,7 @@
             this.txtEpc = new System.Windows.Forms.TextBox();
             this.txtName = new System.Windows.Forms.TextBox();
             this.txtDescription = new System.Windows.Forms.TextBox();
-            this.btnGuardar = new System.Windows.Forms.Button();
+            this.btnSave = new System.Windows.Forms.Button();
             this.btnLeerEpc = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
@@ -99,14 +99,15 @@
             this.txtDescription.Size = new System.Drawing.Size(224, 84);
             this.txtDescription.TabIndex = 6;
             // 
-            // btnGuardar
+            // btnSave
             // 
-            this.btnGuardar.Location = new System.Drawing.Point(123, 217);
-            this.btnGuardar.Name = "btnGuardar";
-            this.btnGuardar.Size = new System.Drawing.Size(75, 23);
-            this.btnGuardar.TabIndex = 7;
-            this.btnGuardar.Text = "Guardar";
-            this.btnGuardar.UseVisualStyleBackColor = true;
+            this.btnSave.Location = new System.Drawing.Point(123, 217);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(75, 23);
+            this.btnSave.TabIndex = 7;
+            this.btnSave.Text = "Guardar";
+            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // btnLeerEpc
             // 
@@ -124,7 +125,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(320, 263);
             this.Controls.Add(this.btnLeerEpc);
-            this.Controls.Add(this.btnGuardar);
+            this.Controls.Add(this.btnSave);
             this.Controls.Add(this.txtDescription);
             this.Controls.Add(this.txtName);
             this.Controls.Add(this.txtEpc);
@@ -148,7 +149,7 @@
         private System.Windows.Forms.TextBox txtEpc;
         private System.Windows.Forms.TextBox txtName;
         private System.Windows.Forms.TextBox txtDescription;
-        private System.Windows.Forms.Button btnGuardar;
+        private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnLeerEpc;
     }
 }
