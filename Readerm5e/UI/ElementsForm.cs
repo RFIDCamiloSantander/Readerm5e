@@ -50,9 +50,7 @@ namespace Readerm5e.UI
             //System.Diagnostics.Debug.WriteLine(e.ColumnIndex.ToString());
             //System.Diagnostics.Debug.WriteLine(dtGridElements.Rows[e.RowIndex].Cells[2].Value.ToString() );
 
-
             DataGridViewRow row = dtGridElements.Rows[e.RowIndex];
-            
             
             editElementForm = new EditElementForm(objReader, row);
             editElementForm.ShowDialog();

@@ -18,6 +18,7 @@ using Cursors = System.Windows.Input.Cursors;
 using Readerm5e.UI;
 using Readerm5e.DAOs;
 using Readerm5e.Models;
+using Readerm5e.BL;
 
 namespace Readerm5e
 {
@@ -55,6 +56,10 @@ namespace Readerm5e
 
         //Socket for tcp streaming
         List<Socket> tagStreamSock = new List<Socket>();
+
+
+        // Tag database object
+        TagDatabase tagdb = new TagDatabase();
 
         //boolean variable to check Http post is enabled or not
         //bool isHttpPostServiceEnabled = false;
@@ -312,18 +317,16 @@ namespace Readerm5e
         /// <param name="read"></param>
         public void PrintTagRead(Object sender, TagReadDataEventArgs e)
         {
-
+            tagdb.Add(e.TagReadData);
             addRow = new deleAddDataGridRow(addDataGridRow);
 
 
-            if (!tagList.Exists(tag => tag.TagReadData.EpcString == e.TagReadData.EpcString))
+            if (!tagList.Exists(tag => tag.TagReadData.EpcString == e.TagReadData.EpcString))//Si el epc ya fue agregado a la lista
             {
                 tagList.Add(e);
                 resp = e;
                 MyThread = new Thread(new ThreadStart(ThreadFunction));
                 MyThread.Start();
-                //System.Diagnostics.Debug.WriteLine("Dentro del Thread");
-                //System.Diagnostics.Debug.WriteLine(JsonConvert.SerializeObject( tagList));
             }
             else
             {
@@ -332,18 +335,17 @@ namespace Readerm5e
                 //Tengo que hacer el if para que se elimine el epc de la lista si ya pasaron mas de 5 segs.
                 if (DateTime.Compare(tag.TagReadData.Time.AddSeconds(5), e.TagReadData.Time) < 0)
                 {
-                    tagList.Remove(tag);
+                    int fnd = tagList.FindIndex(t => t.TagReadData.EpcString == e.TagReadData.EpcString);
+                    tagList[fnd].TagReadData.ReadCount += e.TagReadData.ReadCount;
+
+
+                    //tagList.Remove(tag);
                     tagList.Add(e);
 
                     resp = e;
 
                     MyThread = new Thread(new ThreadStart(ThreadFunction));
                     MyThread.Start();
-
-                    //DateTime time = tag.TagReadData.Time;
-                    //System.Diagnostics.Debug.WriteLine(tag.TagReadData.Time);
-                    //System.Diagnostics.Debug.WriteLine( "el tag" + JsonConvert.SerializeObject( tag ) );
-
                 }
             }
             
@@ -357,14 +359,26 @@ namespace Readerm5e
         public deleAddDataGridRow addRow;
 
 
+
+        //Funcion para agregar datos al dataGridView
         public void addDataGridRow()
         {
-            System.Diagnostics.Debug.WriteLine(JsonConvert.SerializeObject("entra a dataGrid" + resp));
+            System.Diagnostics.Debug.WriteLine("Cantidad 1 - " + tagdb.TagList[0].ReadCount);
+            //System.Diagnostics.Debug.WriteLine("Cantidad 2 - " + tagdb.TagList[1].ReadCount);
+            //System.Diagnostics.Debug.WriteLine(JsonConvert.SerializeObject("entra a dataGrid - " + JsonConvert.SerializeObject(tagdb.TagList[0])));
+            
+            
+            
             Element element = ElementDao.ReadElement(resp.TagReadData.EpcString);
             if (element.EPC != null)
             {
+                int readCount = 0;
+
+                
+
+                readCount += resp.TagReadData.ReadCount;
                 //System.Diagnostics.Debug.WriteLine( JsonConvert.SerializeObject( element ));
-                dtGridResults.Rows.Add(element.EPC, element.Name, element.Description);
+                dtGridResults.Rows.Add(element.EPC, element.Name, element.Description, tagdb.TotalTagCount);
                 Reading reading = new Reading()
                 {
                     ElementoId = element.Id,
@@ -376,7 +390,7 @@ namespace Readerm5e
             }
             else
             {
-                dtGridResults.Rows.Add(resp.TagReadData.EpcString);
+                dtGridResults.Rows.Add(resp.TagReadData.EpcString, "", "", resp.TagReadData.ReadCount);
                 //resp = null;
             }
         }
@@ -440,8 +454,60 @@ namespace Readerm5e
 
         private void btnElementos_Click(object sender, EventArgs e)
         {
-            elementForm = new ElementsForm(objReader);
-            elementForm.Show();
+            if (isConnected)
+            {
+                elementForm = new ElementsForm(objReader);
+                elementForm.Show();
+            }
+            else
+            {
+                MessageBox.Show("Necesita estar 'CONECTADO'.");
+            }
+        }
+
+
+
+
+
+
+
+
+
+            ///// <summary>
+            ///// Merge new tag read with existing one
+            ///// </summary>
+            ///// <param name="data">New tag read</param>
+            //public void Update(TagReadData mergeData)
+            //{
+            //    mergeData.ReadCount += ReadCount;
+            //    TimeSpan timediff = mergeData.Time.ToUniversalTime() - this.TimeStamp.ToUniversalTime();
+            //    // Update only the read counts and not overwriting the tag
+            //    // read data of the existing tag in tag database when we 
+            //    // receive tags in incorrect order.
+            //    if (0 <= timediff.TotalMilliseconds)
+            //    {
+            //        RawRead = mergeData;
+            //    }
+            //    else
+            //    {
+            //        RawRead.ReadCount = mergeData.ReadCount;
+            //    }
+            //    OnPropertyChanged(null);
+            //}
+        
+
+        private void btnEditElement_Click(object sender, EventArgs e)
+        {
+            if (isConnected)
+            {
+                EditElementForm editElementForm = new EditElementForm(objReader);
+                editElementForm.Show();
+            }
+            else
+            {
+                MessageBox.Show("Necesita estar 'CONECTADO'.");
+            }
+            
         }
     }
 

@@ -46,6 +46,8 @@
             this.btnReadings = new System.Windows.Forms.Button();
             this.btnLimpiarTabla = new System.Windows.Forms.Button();
             this.btnElementos = new System.Windows.Forms.Button();
+            this.btnEditElement = new System.Windows.Forms.Button();
+            this.cantReadings = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dtGridResults)).BeginInit();
             this.SuspendLayout();
             // 
@@ -131,7 +133,8 @@
             this.dtGridResults.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.EPC,
             this.Nombre,
-            this.Descripcion});
+            this.Descripcion,
+            this.cantReadings});
             this.dtGridResults.Location = new System.Drawing.Point(12, 68);
             this.dtGridResults.Name = "dtGridResults";
             this.dtGridResults.RowHeadersVisible = false;
@@ -220,11 +223,28 @@
             this.btnElementos.UseVisualStyleBackColor = true;
             this.btnElementos.Click += new System.EventHandler(this.btnElementos_Click);
             // 
+            // btnEditElement
+            // 
+            this.btnEditElement.Location = new System.Drawing.Point(570, 156);
+            this.btnEditElement.Name = "btnEditElement";
+            this.btnEditElement.Size = new System.Drawing.Size(75, 35);
+            this.btnEditElement.TabIndex = 16;
+            this.btnEditElement.Text = "Editar Elemento";
+            this.btnEditElement.UseVisualStyleBackColor = true;
+            this.btnEditElement.Click += new System.EventHandler(this.btnEditElement_Click);
+            // 
+            // cantReadings
+            // 
+            this.cantReadings.HeaderText = "Cantidad Lecturas";
+            this.cantReadings.Name = "cantReadings";
+            this.cantReadings.ReadOnly = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(652, 354);
+            this.Controls.Add(this.btnEditElement);
             this.Controls.Add(this.btnElementos);
             this.Controls.Add(this.btnLimpiarTabla);
             this.Controls.Add(this.btnReadings);
@@ -241,7 +261,7 @@
             this.Controls.Add(this.lblEpcTitle);
             this.Controls.Add(this.btnConnect);
             this.Name = "MainForm";
-            this.Text = "Form1";
+            this.Text = "Bienvenido";
             ((System.ComponentModel.ISupportInitialize)(this.dtGridResults)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -268,6 +288,8 @@
         private System.Windows.Forms.Button btnReadings;
         private System.Windows.Forms.Button btnLimpiarTabla;
         private System.Windows.Forms.Button btnElementos;
+        private System.Windows.Forms.Button btnEditElement;
+        private System.Windows.Forms.DataGridViewTextBoxColumn cantReadings;
     }
 }
 

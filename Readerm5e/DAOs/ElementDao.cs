@@ -123,18 +123,27 @@ namespace Readerm5e.DAOs
         {
             using (SqlConnection Conn = DBC.GetConnection())
             {
-                int rsp = 0;
+                try
+                {
+                    int rsp = 0;
 
-                SqlCommand Comando = new SqlCommand(string.Format(
-                    "UPDATE Element SET Epc = '{0}', Name = '{1}', Description = '{2}', Status = '{3}' WHERE ID = {4};",
-                    pElement.EPC, pElement.Name, pElement.Description, pElement.Status, pElement.Id),
-                Conn);
+                    SqlCommand Comando = new SqlCommand(string.Format(
+                        "UPDATE Element SET Epc = '{0}', Name = '{1}', Description = '{2}', Status = '{3}' WHERE ID = {4};",
+                        pElement.EPC, pElement.Name, pElement.Description, pElement.Status, pElement.Id),
+                    Conn);
 
-                rsp = Comando.ExecuteNonQuery();
+                    rsp = Comando.ExecuteNonQuery();
 
-                Conn.Close();
+                    Conn.Close();
 
-                return rsp;
+                    return rsp;
+                }
+                catch (Exception err)
+                {
+                    System.Diagnostics.Debug.WriteLine(err.Message);
+                    throw;
+                }
+                
             }
         }
     }
