@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ThingMagic;
+using Newtonsoft.Json;
 
 namespace Readerm5e.UI
 {
@@ -48,32 +49,42 @@ namespace Readerm5e.UI
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            Element element = ElementDao.ReadElement(row.Cells[0].Value.ToString());
-            if (element != null)
+            Element checkElement = ElementDao.ReadElement(txtEpc.Text);
+            if (checkElement.Id == 0)
             {
-                try
-                {
-                    element.EPC = txtEpc.Text;
-                    element.Name = txtName.Text;
-                    element.Description = txtDescription.Text;
+                System.Diagnostics.Debug.WriteLine("Epc sin elemento: " + JsonConvert.SerializeObject(checkElement));
 
-                    int rsp = ElementDao.UpdateElement(element);
-                    if (rsp > 0)
-                    {
-                        MessageBox.Show("Elemento editado con Exito");
-                        this.Close();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Hubo problemas al editar el elemento");
-                    }
-                }
-                catch (Exception err)
+                Element element = ElementDao.ReadElement(row.Cells[0].Value.ToString());
+                if (element != null)
                 {
-                    MessageBox.Show(err.Message);
-                    System.Diagnostics.Debug.WriteLine(err);
-                    throw;
+                    try
+                    {
+                        element.EPC = txtEpc.Text;
+                        element.Name = txtName.Text;
+                        element.Description = txtDescription.Text;
+
+                        int rsp = ElementDao.UpdateElement(element);
+                        if (rsp > 0)
+                        {
+                            MessageBox.Show("Elemento editado con Exito");
+                            this.Close();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Hubo problemas al editar el elemento");
+                        }
+                    }
+                    catch (Exception err)
+                    {
+                        MessageBox.Show(err.Message);
+                        System.Diagnostics.Debug.WriteLine(err);
+                        throw;
+                    }
                 }
+            }
+            else
+            {
+                MessageBox.Show("Este EPC ya está asociado a un elemento.");
             }
         }
     }
