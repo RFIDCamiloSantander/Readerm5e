@@ -78,7 +78,6 @@ namespace Readerm5e
 
 
 
-
         private void btnConnect_Click(object sender, EventArgs e)
         {
             if (btnConnect.Text.ToLower() == "conectar")
@@ -366,8 +365,29 @@ namespace Readerm5e
             System.Diagnostics.Debug.WriteLine("Cantidad 1 - " + tagdb.TagList[0].ReadCount);
             //System.Diagnostics.Debug.WriteLine("Cantidad 2 - " + tagdb.TagList[1].ReadCount);
             //System.Diagnostics.Debug.WriteLine(JsonConvert.SerializeObject("entra a dataGrid - " + JsonConvert.SerializeObject(tagdb.TagList[0])));
-            
-            
+
+            long qtyReadedTags = tagdb.TagList.Count;
+
+            int qtyRows = dtGridResults.RowCount;
+
+            if (qtyRows < qtyReadedTags)
+            {
+                for (int i = qtyRows; i < qtyReadedTags; i++)
+                {
+                    Element rowElement = ElementDao.ReadElement(tagdb.TagList[i].EPC);
+                    dtGridResults.Rows.Add(tagdb.TagList[i].EPC, rowElement.Name, rowElement.Description, tagdb.TagList[i].ReadCount);
+                }
+            }
+            else if(qtyRows == qtyReadedTags)
+            {
+
+            }
+
+
+
+
+
+            System.Diagnostics.Debug.WriteLine(qtyReadedTags + " - " + qtyRows);
             
             Element element = ElementDao.ReadElement(resp.TagReadData.EpcString);
             if (element.EPC != null)
