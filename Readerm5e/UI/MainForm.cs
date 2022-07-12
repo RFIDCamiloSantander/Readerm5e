@@ -319,34 +319,36 @@ namespace Readerm5e
             tagdb.Add(e.TagReadData);
             addRow = new deleAddDataGridRow(addDataGridRow);
 
+            MyThread = new Thread(new ThreadStart(ThreadFunction));
+            MyThread.Start();
 
-            if (!tagList.Exists(tag => tag.TagReadData.EpcString == e.TagReadData.EpcString))//Si el epc ya fue agregado a la lista
-            {
-                tagList.Add(e);
-                resp = e;
-                MyThread = new Thread(new ThreadStart(ThreadFunction));
-                MyThread.Start();
-            }
-            else
-            {
-                TagReadDataEventArgs tag = tagList.Find( t => t.TagReadData.EpcString == e.TagReadData.EpcString);
+            //if (!tagList.Exists(tag => tag.TagReadData.EpcString == e.TagReadData.EpcString))//Si el epc ya fue agregado a la lista
+            //{
+            //    tagList.Add(e);
+            //    resp = e;
+            //    MyThread = new Thread(new ThreadStart(ThreadFunction));
+            //    MyThread.Start();
+            //}
+            //else
+            //{
+            //    TagReadDataEventArgs tag = tagList.Find( t => t.TagReadData.EpcString == e.TagReadData.EpcString);
 
-                //Tengo que hacer el if para que se elimine el epc de la lista si ya pasaron mas de 5 segs.
-                if (DateTime.Compare(tag.TagReadData.Time.AddSeconds(5), e.TagReadData.Time) < 0)
-                {
-                    int fnd = tagList.FindIndex(t => t.TagReadData.EpcString == e.TagReadData.EpcString);
-                    tagList[fnd].TagReadData.ReadCount += e.TagReadData.ReadCount;
+            //    //Tengo que hacer el if para que se elimine el epc de la lista si ya pasaron mas de 5 segs.
+            //    if (DateTime.Compare(tag.TagReadData.Time.AddSeconds(5), e.TagReadData.Time) < 0)
+            //    {
+            //        int fnd = tagList.FindIndex(t => t.TagReadData.EpcString == e.TagReadData.EpcString);
+            //        tagList[fnd].TagReadData.ReadCount += e.TagReadData.ReadCount;
 
 
-                    //tagList.Remove(tag);
-                    tagList.Add(e);
+            //        //tagList.Remove(tag);
+            //        tagList.Add(e);
 
-                    resp = e;
+            //        resp = e;
 
-                    MyThread = new Thread(new ThreadStart(ThreadFunction));
-                    MyThread.Start();
-                }
-            }
+            //        MyThread = new Thread(new ThreadStart(ThreadFunction));
+            //        MyThread.Start();
+            //    }
+            //}
             
             //Da error pq se manipula el dataGrid desde otro subproceso, no el que lo creo.
             //dtGridResults.Rows.Add(e.TagReadData.EpcString);
@@ -362,57 +364,96 @@ namespace Readerm5e
         //Funcion para agregar datos al dataGridView
         public void addDataGridRow()
         {
-            System.Diagnostics.Debug.WriteLine("Cantidad 1 - " + tagdb.TagList[0].ReadCount);
-            //System.Diagnostics.Debug.WriteLine("Cantidad 2 - " + tagdb.TagList[1].ReadCount);
-            //System.Diagnostics.Debug.WriteLine(JsonConvert.SerializeObject("entra a dataGrid - " + JsonConvert.SerializeObject(tagdb.TagList[0])));
 
             long qtyReadedTags = tagdb.TagList.Count;
 
             int qtyRows = dtGridResults.RowCount;
+
+            System.Diagnostics.Debug.WriteLine(qtyReadedTags + " - " + qtyRows);
 
             if (qtyRows < qtyReadedTags)
             {
                 for (int i = qtyRows; i < qtyReadedTags; i++)
                 {
                     Element rowElement = ElementDao.ReadElement(tagdb.TagList[i].EPC);
-                    dtGridResults.Rows.Add(tagdb.TagList[i].EPC, rowElement.Name, rowElement.Description, tagdb.TagList[i].ReadCount);
+                    dtGridResults.Rows.Add(tagdb.TagList[i].EPC, rowElement.Name, tagdb.TagList[i].ReadCount, tagdb.TagList[i].TimeStamp, rowElement.Description);
+                    if (rowElement.Id != 0)
+                    {
+                        CreateRead(rowElement.Id);
+                    }
                 }
             }
             else if(qtyRows == qtyReadedTags)
             {
+                for (int i = 0; i < qtyRows; i++)
+                {
+                    System.Diagnostics.Debug.WriteLine(tagdb.TagList[i].EPC);
+                    Element rowElement = ElementDao.ReadElement(tagdb.TagList[i].EPC);
 
+                    dtGridResults.Rows[i].Cells[2].Value = tagdb.TagList[i].ReadCount;
+                    dtGridResults.Rows[i].Cells[3].Value = tagdb.TagList[i].TimeStamp;
+
+
+                    if (rowElement.Id != 0)
+                    {
+                        DateTime lastSeen = (DateTime) dtGridResults.Rows[i].Cells[3].Value;
+
+                        System.Diagnostics.Debug.WriteLine("lastseen: " + lastSeen + " - Id: " + rowElement.Id);
+                        System.Diagnostics.Debug.WriteLine("lastseen: " + lastSeen + " - Id: " + rowElement.Id);
+
+                        if (lastSeen.AddSeconds(5) < tagdb.TagList[i].TimeStamp)
+                        {
+                            CreateRead(rowElement.Id);
+                        }
+                    }
+
+                }
             }
 
 
 
 
 
-            System.Diagnostics.Debug.WriteLine(qtyReadedTags + " - " + qtyRows);
             
-            Element element = ElementDao.ReadElement(resp.TagReadData.EpcString);
-            if (element.EPC != null)
-            {
-                int readCount = 0;
+            //Element element = ElementDao.ReadElement(resp.TagReadData.EpcString);
+            //if (element.EPC != null)
+            //{
+            //    int readCount = 0;
 
                 
 
-                readCount += resp.TagReadData.ReadCount;
-                //System.Diagnostics.Debug.WriteLine( JsonConvert.SerializeObject( element ));
-                dtGridResults.Rows.Add(element.EPC, element.Name, element.Description, tagdb.TotalTagCount);
-                Reading reading = new Reading()
-                {
-                    ElementoId = element.Id,
-                    //TimeStamp = GetTimestamp(DateTime.Now)
-                    TimeStamp = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds()
-                };
-                ReadingsDao.CreateReading(reading);
-                //resp = null;
-            }
-            else
+            //    readCount += resp.TagReadData.ReadCount;
+            //    //System.Diagnostics.Debug.WriteLine( JsonConvert.SerializeObject( element ));
+            //    dtGridResults.Rows.Add(element.EPC, element.Name, element.Description, tagdb.TotalTagCount);
+            //    Reading reading = new Reading()
+            //    {
+            //        ElementoId = element.Id,
+            //        //TimeStamp = GetTimestamp(DateTime.Now)
+            //        TimeStamp = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds()
+            //    };
+            //    ReadingsDao.CreateReading(reading);
+            //    //resp = null;
+            //}
+            //else
+            //{
+            //    dtGridResults.Rows.Add(resp.TagReadData.EpcString, "", "", resp.TagReadData.ReadCount);
+            //    //resp = null;
+            //}
+        }
+
+
+
+        private void CreateRead(int pId)
+        {
+
+            Reading reading = new Reading()
             {
-                dtGridResults.Rows.Add(resp.TagReadData.EpcString, "", "", resp.TagReadData.ReadCount);
-                //resp = null;
-            }
+                ElementoId = pId,
+                TimeStamp = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds()
+            };
+
+            ReadingsDao.CreateReading(reading);
+
         }
 
 
