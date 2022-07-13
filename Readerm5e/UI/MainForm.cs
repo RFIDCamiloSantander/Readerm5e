@@ -9,12 +9,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ThingMagic;
 using Newtonsoft.Json;
-using System.Windows.Input;
 using System.Management;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Net.Sockets;
-using Cursors = System.Windows.Input.Cursors;
 using Readerm5e.UI;
 using Readerm5e.DAOs;
 using Readerm5e.Models;
@@ -52,7 +50,10 @@ namespace Readerm5e
         bool isConnected = false;
 
         //Booleano para saber si se encuentra leyendo el lector.
-        bool isReading = false;
+        static bool isReading = false;
+
+        //Booleando para saber si esta activa la auto escritura
+        bool isAutoWriting = false;
 
         //Socket for tcp streaming
         List<Socket> tagStreamSock = new List<Socket>();
@@ -80,8 +81,12 @@ namespace Readerm5e
 
         private void btnConnect_Click(object sender, EventArgs e)
         {
+            Cursor = Cursors.WaitCursor;
+
             if (btnConnect.Text.ToLower() == "conectar")
             {
+
+
                 try
                 {
                     if (objReader != null)
@@ -168,6 +173,9 @@ namespace Readerm5e
 
                 }
             }
+
+            Cursor = Cursors.Arrow;
+
         }
 
 
@@ -176,7 +184,9 @@ namespace Readerm5e
         {
             try
             {
-                Mouse.SetCursor(Cursors.Wait);
+                //Mouse.SetCursor(Cursors.Wait);
+
+                Cursor = Cursors.WaitCursor;
                 
                 List<string> portNames = GetComPortNames();
 
@@ -191,14 +201,18 @@ namespace Readerm5e
                     cmbReaderPort.Text = portNames[0];
                 }
                 
-                Mouse.SetCursor(Cursors.Arrow);
+                //Mouse.SetCursor(Cursors.Arrow);
+
+                Cursor = Cursors.Arrow;
             }
             catch (Exception bonjEX)
             {
-                Mouse.SetCursor(Cursors.Arrow);
+                //Mouse.SetCursor(Cursors.Arrow);
+                Cursor = Cursors.Arrow;
                 throw bonjEX;
             }
         }
+
 
         private List<string> GetComPortNames()
         {
@@ -224,15 +238,19 @@ namespace Readerm5e
             {
                 try
                 {
+                    objReader.StopReading();
+
                     TagReadData[] tagList = objReader.Read(100);
+
+                    objReader.StartReading();
 
                     foreach (TagReadData tag in tagList)
                     {
-                        System.Diagnostics.Debug.WriteLine("EPC: " + tag.EpcString);
-                        System.Diagnostics.Debug.WriteLine("prd: " + JsonConvert.SerializeObject(tag.prd));
-                        System.Diagnostics.Debug.WriteLine("Data: " + JsonConvert.SerializeObject(tag.Data));
-                        System.Diagnostics.Debug.WriteLine("Tag: " + tag.Tag);
-                        System.Diagnostics.Debug.WriteLine("Tag: " + tag.ReadCount);
+                        //System.Diagnostics.Debug.WriteLine("EPC: " + tag.EpcString);
+                        //System.Diagnostics.Debug.WriteLine("prd: " + JsonConvert.SerializeObject(tag.prd));
+                        //System.Diagnostics.Debug.WriteLine("Data: " + JsonConvert.SerializeObject(tag.Data));
+                        //System.Diagnostics.Debug.WriteLine("Tag: " + tag.Tag);
+                        //System.Diagnostics.Debug.WriteLine("Tag: " + tag.ReadCount);
                         lblEPC.Text = tag.EpcString;
                     }
                     //System.Diagnostics.Debug.WriteLine(tagList);
@@ -264,6 +282,7 @@ namespace Readerm5e
                         //objReader.ParamSet("/reader/region/id", Reader.Region.NA);
 
                         objReader.TagRead += PrintTagRead;
+                        //objReader.TagRead += autoWrite;
 
                         objReader.StartReading();
                         btnStartReading.Text = "Detener Lecturas";
@@ -365,19 +384,19 @@ namespace Readerm5e
         public void addDataGridRow()
         {
 
-            long qtyReadedTags = tagdb.TagList.Count;
+            long qtyReadedTags = tagdb.TagList.Count; //Cantidad de Tags unicos leidos.
 
-            int qtyRows = dtGridResults.RowCount;
+            int qtyRows = dtGridResults.RowCount; //Cantidad de filas en el DataGrid.
 
             System.Diagnostics.Debug.WriteLine(qtyReadedTags + " - " + qtyRows);
 
-            if (qtyRows < qtyReadedTags)
+            if (qtyRows < qtyReadedTags) //Revisa si hay menos filas que tags unicos.
             {
-                for (int i = qtyRows; i < qtyReadedTags; i++)
+                for (int i = qtyRows; i < qtyReadedTags; i++) //For para agregar las filas faltantes al DataGrid
                 {
                     Element rowElement = ElementDao.ReadElement(tagdb.TagList[i].EPC);
                     dtGridResults.Rows.Add(tagdb.TagList[i].EPC, rowElement.Name, tagdb.TagList[i].ReadCount, tagdb.TagList[i].TimeStamp, rowElement.Description);
-                    if (rowElement.Id != 0)
+                    if (rowElement.Id != 0) //Crea lectura si el epc leido esta asociado.
                     {
                         CreateRead(rowElement.Id);
                     }
@@ -390,8 +409,6 @@ namespace Readerm5e
                     System.Diagnostics.Debug.WriteLine(tagdb.TagList[i].EPC);
                     Element rowElement = ElementDao.ReadElement(tagdb.TagList[i].EPC);
 
-                    dtGridResults.Rows[i].Cells[2].Value = tagdb.TagList[i].ReadCount;
-                    dtGridResults.Rows[i].Cells[3].Value = tagdb.TagList[i].TimeStamp;
 
 
                     if (rowElement.Id != 0)
@@ -399,7 +416,7 @@ namespace Readerm5e
                         DateTime lastSeen = (DateTime) dtGridResults.Rows[i].Cells[3].Value;
 
                         System.Diagnostics.Debug.WriteLine("lastseen: " + lastSeen + " - Id: " + rowElement.Id);
-                        System.Diagnostics.Debug.WriteLine("lastseen: " + lastSeen + " - Id: " + rowElement.Id);
+                        System.Diagnostics.Debug.WriteLine("lastseenGrid: " + lastSeen + " - LastSeenTagDB: " + tagdb.TagList[i].TimeStamp);
 
                         if (lastSeen.AddSeconds(5) < tagdb.TagList[i].TimeStamp)
                         {
@@ -407,38 +424,10 @@ namespace Readerm5e
                         }
                     }
 
+                    dtGridResults.Rows[i].Cells[2].Value = tagdb.TagList[i].ReadCount;
+                    dtGridResults.Rows[i].Cells[3].Value = tagdb.TagList[i].TimeStamp;
                 }
             }
-
-
-
-
-
-            
-            //Element element = ElementDao.ReadElement(resp.TagReadData.EpcString);
-            //if (element.EPC != null)
-            //{
-            //    int readCount = 0;
-
-                
-
-            //    readCount += resp.TagReadData.ReadCount;
-            //    //System.Diagnostics.Debug.WriteLine( JsonConvert.SerializeObject( element ));
-            //    dtGridResults.Rows.Add(element.EPC, element.Name, element.Description, tagdb.TotalTagCount);
-            //    Reading reading = new Reading()
-            //    {
-            //        ElementoId = element.Id,
-            //        //TimeStamp = GetTimestamp(DateTime.Now)
-            //        TimeStamp = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds()
-            //    };
-            //    ReadingsDao.CreateReading(reading);
-            //    //resp = null;
-            //}
-            //else
-            //{
-            //    dtGridResults.Rows.Add(resp.TagReadData.EpcString, "", "", resp.TagReadData.ReadCount);
-            //    //resp = null;
-            //}
         }
 
 
@@ -464,17 +453,12 @@ namespace Readerm5e
         }
 
 
-        //Para convertir en TimeStamp.
-        public static string GetTimestamp(DateTime value)
-        {
-            return value.ToString("yyyyMMddHHmmssffff");
-        }
-
         private void btnRefresh_Click(object sender, EventArgs e)
         {
             cmbReaderPort.Items.Clear();
             InitializeReaderUriBox();
         }
+
 
         private void btnReWrite_Click(object sender, EventArgs e)
         {
@@ -493,7 +477,11 @@ namespace Readerm5e
         {
             if (isConnected)
             {
-                enrollForm = new EnrollForm(objReader);
+                if (isReading)
+                {
+
+                }
+                enrollForm = new EnrollForm(objReader, isReading);
                 enrollForm.Show();
             }
             else
@@ -526,35 +514,6 @@ namespace Readerm5e
             }
         }
 
-
-
-
-
-
-
-
-
-            ///// <summary>
-            ///// Merge new tag read with existing one
-            ///// </summary>
-            ///// <param name="data">New tag read</param>
-            //public void Update(TagReadData mergeData)
-            //{
-            //    mergeData.ReadCount += ReadCount;
-            //    TimeSpan timediff = mergeData.Time.ToUniversalTime() - this.TimeStamp.ToUniversalTime();
-            //    // Update only the read counts and not overwriting the tag
-            //    // read data of the existing tag in tag database when we 
-            //    // receive tags in incorrect order.
-            //    if (0 <= timediff.TotalMilliseconds)
-            //    {
-            //        RawRead = mergeData;
-            //    }
-            //    else
-            //    {
-            //        RawRead.ReadCount = mergeData.ReadCount;
-            //    }
-            //    OnPropertyChanged(null);
-            //}
         
 
         private void btnEditElement_Click(object sender, EventArgs e)
@@ -570,6 +529,25 @@ namespace Readerm5e
             }
             
         }
+
+        private void btnAutoWrite_Click(object sender, EventArgs e)
+        {
+            if (isAutoWriting)
+            {
+                isAutoWriting = false;
+            }
+            else
+            {
+                //objReader.TagRead += ;
+                isAutoWriting = true;
+            }
+        }
+
+        private void autoWrite(Object sender, TagReadDataEventArgs e)
+        {
+            //SendKeys.SendWait("holiwi");
+            SendKeys.SendWait(e.TagReadData.EpcString + "{ENTER}");
+        }
     }
 
 
@@ -579,7 +557,6 @@ namespace Readerm5e
     public class MyThreadClass
     {
         MainForm myFormControl1;
-
 
         public MyThreadClass(MainForm myForm)
         {
@@ -591,5 +568,6 @@ namespace Readerm5e
         {
             myFormControl1.Invoke(myFormControl1.addRow);
         }
+
     }
 }

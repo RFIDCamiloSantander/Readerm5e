@@ -10,13 +10,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ThingMagic;
+using Readerm5e.Validators;
+using FluentValidation.Results;
 
 namespace Readerm5e.UI
 {
     public partial class EnrollForm : Form
     {
         Reader objReader;
-        public EnrollForm(Reader pObjReader)
+        public EnrollForm(Reader pObjReader, bool pIsReading)
         {
             objReader = pObjReader;
             InitializeComponent();
@@ -24,7 +26,14 @@ namespace Readerm5e.UI
 
         private void btnRead_Click(object sender, EventArgs e)
         {
+
+            
+            objReader.StopReading();
+
             TagReadData[] tagList = objReader.Read(100);
+
+            objReader.StartReading();
+
 
             foreach (TagReadData tag in tagList)
             {
@@ -43,16 +52,29 @@ namespace Readerm5e.UI
                 Status = null,
             };
 
-            int rsp = ElementDao.CreateElement(element);
+            ElementValidator validator = new ElementValidator();
 
-            if (rsp > 0)
+            ValidationResult result = validator.Validate(element);
+
+            if (result.IsValid)
             {
-                MessageBox.Show("Elemento agregado con exito.");
+                int rsp = ElementDao.CreateElement(element);
+
+                if (rsp > 0)
+                {
+                    MessageBox.Show("Elemento agregado con exito.");
+                }
+                else
+                {
+                    MessageBox.Show("Hubo problemas al agregar el elemento.");
+                }
             }
             else
             {
-                MessageBox.Show("Hubo problemas al agregar el elemento.");
+                MessageBox.Show(result.Errors[0].ToString());
+                
             }
+
         }
     }
 }

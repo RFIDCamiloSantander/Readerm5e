@@ -29,8 +29,6 @@ namespace Readerm5e.DAOs
 
                 while (Reader.Read())
                 {
-                    System.Diagnostics.Debug.WriteLine("el JSon Dentro del reader: " + Reader.GetString(0) );
-                    System.Diagnostics.Debug.WriteLine("el JSon Dentro del reader: " + Reader.GetString(1) );
                     Reading Reading = new Reading()
                     {
                         //Id = Reader.GetInt32(0),

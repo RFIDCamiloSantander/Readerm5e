@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.btnConnect = new System.Windows.Forms.Button();
             this.lblEpcTitle = new System.Windows.Forms.Label();
             this.cmbReaderPort = new System.Windows.Forms.ComboBox();
@@ -50,6 +50,7 @@
             this.btnLimpiarTabla = new System.Windows.Forms.Button();
             this.btnElementos = new System.Windows.Forms.Button();
             this.btnEditElement = new System.Windows.Forms.Button();
+            this.btnAutoWrite = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dtGridResults)).BeginInit();
             this.SuspendLayout();
             // 
@@ -135,8 +136,8 @@
             // dtGridResults
             // 
             this.dtGridResults.AllowUserToAddRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.dtGridResults.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.dtGridResults.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
             this.dtGridResults.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -272,11 +273,22 @@
             this.btnEditElement.UseVisualStyleBackColor = true;
             this.btnEditElement.Click += new System.EventHandler(this.btnEditElement_Click);
             // 
+            // btnAutoWrite
+            // 
+            this.btnAutoWrite.Location = new System.Drawing.Point(651, 12);
+            this.btnAutoWrite.Name = "btnAutoWrite";
+            this.btnAutoWrite.Size = new System.Drawing.Size(94, 23);
+            this.btnAutoWrite.TabIndex = 17;
+            this.btnAutoWrite.Text = "Auto-Escritura";
+            this.btnAutoWrite.UseVisualStyleBackColor = true;
+            this.btnAutoWrite.Click += new System.EventHandler(this.btnAutoWrite_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(832, 398);
+            this.Controls.Add(this.btnAutoWrite);
             this.Controls.Add(this.btnEditElement);
             this.Controls.Add(this.btnElementos);
             this.Controls.Add(this.btnLimpiarTabla);
@@ -326,6 +338,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn cantReadings;
         private System.Windows.Forms.DataGridViewTextBoxColumn lastSeenDate;
         private System.Windows.Forms.DataGridViewTextBoxColumn Descripcion;
+        private System.Windows.Forms.Button btnAutoWrite;
     }
 }
 

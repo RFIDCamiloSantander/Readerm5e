@@ -21,12 +21,13 @@ namespace Readerm5e.UI
             getReadings();
             foreach (Reading reading in readingsList)
             {
+                
 
-                string date = DateTimeOffset.FromUnixTimeSeconds(reading.TimeStamp).ToString();
+                string date = DateTimeOffset.FromUnixTimeSeconds(reading.TimeStamp).AddHours(-4).ToString();
                 //int cortarString = date.IndexOf("+");
                 date = date.Substring(0, date.IndexOf("+"));
                 
-                System.Diagnostics.Debug.WriteLine(date + " - " + date);
+                //System.Diagnostics.Debug.WriteLine(date + " - " + date);
                 dtGridReadings.Rows.Add( reading.ElementoId, reading.ElementoName, date, reading.ElementoDescription );
             }
         }
