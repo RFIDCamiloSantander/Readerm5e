@@ -20,12 +20,15 @@ namespace Readerm5e.UI
 
         string orEpc;
 
+        bool isReading;
+
         
         //Abriendo el form desde la lista de elementos
-        public EditElementForm(Reader pObjReader, DataGridViewRow pRow)
+        public EditElementForm(Reader pObjReader, DataGridViewRow pRow, bool pIsReading)
         {
             orEpc = pRow.Cells[0].Value.ToString();
             objReader = pObjReader;
+            isReading = pIsReading;
             InitializeComponent();
             txtEpc.Text = pRow.Cells[0].Value.ToString();
             txtName.Text = pRow.Cells[1].Value.ToString();
@@ -35,9 +38,10 @@ namespace Readerm5e.UI
 
 
         //Abriendo el form desde el btnEditElement en mainForm.
-        public EditElementForm(Reader pObjReader)
+        public EditElementForm(Reader pObjReader, bool pIsReading)
         {
             objReader = pObjReader;
+            isReading = pIsReading;
             InitializeComponent();
         }
 
@@ -45,7 +49,18 @@ namespace Readerm5e.UI
         {
             try
             {
-                TagReadData[] tagList = objReader.Read(100);
+                TagReadData[] tagList;
+
+                if (isReading) //Revisa si esta leyendo
+                {
+                    objReader.StopReading();
+                    tagList = objReader.Read(100);
+                    objReader.StartReading();
+                }
+                else
+                {
+                    tagList = objReader.Read(100);
+                }
 
                 foreach (TagReadData tag in tagList)
                 {

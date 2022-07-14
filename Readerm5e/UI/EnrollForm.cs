@@ -17,22 +17,32 @@ namespace Readerm5e.UI
 {
     public partial class EnrollForm : Form
     {
+        //El lector
         Reader objReader;
+
+        //Variable para controlar el estado de si esta leyendo.
+        bool isReading;
         public EnrollForm(Reader pObjReader, bool pIsReading)
         {
+            isReading = pIsReading;
             objReader = pObjReader;
             InitializeComponent();
         }
 
         private void btnRead_Click(object sender, EventArgs e)
         {
+            TagReadData[] tagList;
 
-            
-            objReader.StopReading();
-
-            TagReadData[] tagList = objReader.Read(100);
-
-            objReader.StartReading();
+            if (isReading) //Revisa si esta leyendo
+            {
+                objReader.StopReading();
+                tagList = objReader.Read(100);
+                objReader.StartReading();
+            }
+            else
+            {
+                tagList = objReader.Read(100);
+            }
 
 
             foreach (TagReadData tag in tagList)

@@ -18,17 +18,30 @@ namespace Readerm5e.UI
     {
         //Variable para recibir el Reader enviado desde el MainForm
         Reader objReader;
+        bool isReading;
 
-        public WriteTagForm(Reader pObjReader)
+        public WriteTagForm(Reader pObjReader, bool pIsReading)
         {
             objReader = pObjReader;
+            isReading = pIsReading;
             InitializeComponent();
         }
 
 
         private void btnReadEpc_Click(object sender, EventArgs e)
         {
-            TagReadData[] tagList = objReader.Read(100);
+            TagReadData[] tagList;
+
+            if (isReading) //Revisa si esta leyendo
+            {
+                objReader.StopReading();
+                tagList = objReader.Read(100);
+                objReader.StartReading();
+            }
+            else
+            {
+                tagList = objReader.Read(100);
+            }
 
             foreach (TagReadData tag in tagList)
             {

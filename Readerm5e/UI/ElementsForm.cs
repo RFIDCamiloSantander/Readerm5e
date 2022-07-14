@@ -21,9 +21,12 @@ namespace Readerm5e.UI
 
         Reader objReader;
 
-        public ElementsForm(Reader pObjReader)
+        bool isReading;
+
+        public ElementsForm(Reader pObjReader, bool pIsReading)
         {
             objReader = pObjReader;
+            isReading = pIsReading;
             InitializeComponent();
             getElements();
             populateDataGridElement();
@@ -52,7 +55,7 @@ namespace Readerm5e.UI
 
             DataGridViewRow row = dtGridElements.Rows[e.RowIndex];
             
-            editElementForm = new EditElementForm(objReader, row);
+            editElementForm = new EditElementForm(objReader, row, isReading);
             editElementForm.ShowDialog();
 
             dtGridElements.Rows.Clear();

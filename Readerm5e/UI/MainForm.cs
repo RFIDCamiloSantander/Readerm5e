@@ -52,8 +52,11 @@ namespace Readerm5e
         //Booleano para saber si se encuentra leyendo el lector.
         static bool isReading = false;
 
-        //Booleando para saber si esta activa la auto escritura
+        //Booleano para saber si esta activa la auto escritura
         bool isAutoWriting = false;
+
+        //Booleano para almacenar el ultimo epc escrito
+        TagReadData lastWrote;
 
         //Socket for tcp streaming
         List<Socket> tagStreamSock = new List<Socket>();
@@ -83,13 +86,11 @@ namespace Readerm5e
         {
             Cursor = Cursors.WaitCursor;
 
-            if (btnConnect.Text.ToLower() == "conectar")
+            if (btnConnect.Text.ToLower() == "conectar") //Revisa el estado del boton conectar.
             {
-
-
                 try
                 {
-                    if (objReader != null)
+                    if (objReader != null) //Revisa que no haya un Reader creado.
                     {
                         objReader.Destroy();
                         objReader = null;
@@ -173,11 +174,8 @@ namespace Readerm5e
 
                 }
             }
-
             Cursor = Cursors.Arrow;
-
         }
-
 
 
         private void InitializeReaderUriBox()
@@ -238,27 +236,29 @@ namespace Readerm5e
             {
                 try
                 {
-                    objReader.StopReading();
 
-                    TagReadData[] tagList = objReader.Read(100);
+                    TagReadData[] tagList;
+                    if (isReading) //Revisa si esta leyendo
+                    {
+                        objReader.StopReading();
+                        tagList = objReader.Read(100);
+                        objReader.StartReading();
+                    }
+                    else
+                    {
+                        tagList = objReader.Read(100);
+                    }
 
-                    objReader.StartReading();
 
                     foreach (TagReadData tag in tagList)
                     {
-                        //System.Diagnostics.Debug.WriteLine("EPC: " + tag.EpcString);
-                        //System.Diagnostics.Debug.WriteLine("prd: " + JsonConvert.SerializeObject(tag.prd));
-                        //System.Diagnostics.Debug.WriteLine("Data: " + JsonConvert.SerializeObject(tag.Data));
-                        //System.Diagnostics.Debug.WriteLine("Tag: " + tag.Tag);
-                        //System.Diagnostics.Debug.WriteLine("Tag: " + tag.ReadCount);
                         lblEPC.Text = tag.EpcString;
                     }
-                    //System.Diagnostics.Debug.WriteLine(tagList);
-                    //System.Diagnostics.Debug.WriteLine(JsonConvert.SerializeObject(tagList));
                 }
                 catch (Exception err)
                 {
                     System.Diagnostics.Debug.WriteLine(err);
+                    MessageBox.Show(err.Message.ToString());
                     throw;
                 }
             }
@@ -464,7 +464,7 @@ namespace Readerm5e
         {
             if (isConnected)
             {
-                writeTagForm = new WriteTagForm(objReader);
+                writeTagForm = new WriteTagForm(objReader, isReading);
                 writeTagForm.Show();
             }
             else
@@ -505,7 +505,7 @@ namespace Readerm5e
         {
             if (isConnected)
             {
-                elementForm = new ElementsForm(objReader);
+                elementForm = new ElementsForm(objReader, isReading);
                 elementForm.Show();
             }
             else
@@ -520,7 +520,7 @@ namespace Readerm5e
         {
             if (isConnected)
             {
-                EditElementForm editElementForm = new EditElementForm(objReader);
+                EditElementForm editElementForm = new EditElementForm(objReader, isReading);
                 editElementForm.Show();
             }
             else
@@ -532,21 +532,28 @@ namespace Readerm5e
 
         private void btnAutoWrite_Click(object sender, EventArgs e)
         {
-            if (isAutoWriting)
+            if (isReading)
             {
-                isAutoWriting = false;
+                objReader.TagRead += autoWrite;
             }
             else
             {
-                //objReader.TagRead += ;
-                isAutoWriting = true;
+                objReader.StartReading();
+                objReader.TagRead += autoWrite;
             }
         }
 
         private void autoWrite(Object sender, TagReadDataEventArgs e)
         {
             //SendKeys.SendWait("holiwi");
-            SendKeys.SendWait(e.TagReadData.EpcString + "{ENTER}");
+            lastWrote = e.TagReadData;
+
+            if (lastWrote != null)
+            {
+                System.Diagnostics.Debug.WriteLine("Lastwor");
+                SendKeys.SendWait(e.TagReadData.EpcString + "{ENTER}");
+            }
+
         }
     }
 

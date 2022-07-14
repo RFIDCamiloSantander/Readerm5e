@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.btnConnect = new System.Windows.Forms.Button();
             this.lblEpcTitle = new System.Windows.Forms.Label();
             this.cmbReaderPort = new System.Windows.Forms.ComboBox();
@@ -77,10 +77,11 @@
             // 
             // cmbReaderPort
             // 
+            this.cmbReaderPort.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbReaderPort.FormattingEnabled = true;
             this.cmbReaderPort.Location = new System.Drawing.Point(113, 13);
             this.cmbReaderPort.Name = "cmbReaderPort";
-            this.cmbReaderPort.Size = new System.Drawing.Size(179, 21);
+            this.cmbReaderPort.Size = new System.Drawing.Size(179, 24);
             this.cmbReaderPort.TabIndex = 3;
             // 
             // btnRead1
@@ -136,8 +137,8 @@
             // dtGridResults
             // 
             this.dtGridResults.AllowUserToAddRows = false;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.dtGridResults.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.dtGridResults.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dtGridResults.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
