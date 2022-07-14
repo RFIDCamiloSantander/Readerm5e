@@ -532,28 +532,65 @@ namespace Readerm5e
 
         private void btnAutoWrite_Click(object sender, EventArgs e)
         {
-            if (isReading)
+            if (isConnected)
             {
-                objReader.TagRead += autoWrite;
+                if (lblAutoWriteState.Text == "Desactivado")
+                {
+                    if (isReading)
+                    {
+                        lblAutoWriteState.Text = "Activado";
+                        lblAutoWriteState.ForeColor = Color.Blue;
+                        objReader.TagRead += autoWrite;
+                    }
+                    else
+                    {
+                        lblAutoWriteState.Text = "Activado";
+                        lblAutoWriteState.ForeColor = Color.Blue;
+                        objReader.TagRead += autoWrite;
+                        objReader.StartReading();
+                    }
+                }
+                else
+                {
+                    objReader.TagRead -= autoWrite;
+                    lblAutoWriteState.Text = "Desactivado";
+                    lblAutoWriteState.ForeColor = Color.Red;
+                }
             }
             else
             {
-                objReader.StartReading();
-                objReader.TagRead += autoWrite;
+                MessageBox.Show("Necesita estar 'CONECTADO'.");
             }
         }
 
         private void autoWrite(Object sender, TagReadDataEventArgs e)
         {
             //SendKeys.SendWait("holiwi");
-            lastWrote = e.TagReadData;
 
-            if (lastWrote != null)
+            if (lastWrote == null)
             {
-                System.Diagnostics.Debug.WriteLine("Lastwor");
+                lastWrote = e.TagReadData;
+                //System.Diagnostics.Debug.WriteLine("lastWrote: " + lastWrote.Time + "Evento: " + e.TagReadData.Time);
                 SendKeys.SendWait(e.TagReadData.EpcString + "{ENTER}");
             }
+            else
+            {
+                if (lastWrote.EpcString == e.TagReadData.EpcString)
+                {
+                    if (lastWrote.Time.AddSeconds(2) <= e.TagReadData.Time)
+                    {
+                        lastWrote = e.TagReadData;
+                        SendKeys.SendWait(e.TagReadData.EpcString + "{ENTER}");
+                        System.Diagnostics.Debug.WriteLine("lastWrote: " + lastWrote.Time + "Evento: " + e.TagReadData.Time);
+                    }
 
+                }
+                else
+                {
+                    SendKeys.SendWait(e.TagReadData.EpcString + "{ENTER}");
+                    lastWrote = e.TagReadData;
+                }
+            }
         }
     }
 

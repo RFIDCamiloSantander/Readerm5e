@@ -63,5 +63,44 @@ namespace Readerm5e.UI
             populateDataGridElement();
 
         }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            if (txtFilterEpc.Text.Trim() != null && txtFilterEpc.Text.Trim() != "")
+            {
+                elementList = elementList.FindAll(elem => elem.EPC.Contains(txtFilterEpc.Text.Trim()));
+            }
+
+            if (txtFilterName.Text.Trim() != null && txtFilterName.Text.Trim() != "")
+            {
+                elementList = elementList.FindAll(elem => elem.Name.Contains(txtFilterName.Text.Trim()));
+            }
+
+            if (txtFilterDescription.Text.Trim() != null && txtFilterDescription.Text.Trim() != "")
+            {
+                elementList = elementList.FindAll(elem => elem.Description.Contains(txtFilterDescription.Text.Trim()));
+            }
+
+            System.Diagnostics.Debug.WriteLine( txtFilterEpc.Text );
+
+            dtGridElements.Rows.Clear();
+
+            foreach (Element element in elementList)
+            {
+                System.Diagnostics.Debug.WriteLine("entre al foreach");
+                dtGridElements.Rows.Add(element.EPC, element.Name, element.Description);
+            }
+        }
+
+        private void btnCleanFilters_Click(object sender, EventArgs e)
+        {
+            txtFilterEpc.Text = "";
+            txtFilterName.Text = "";
+            txtFilterDescription.Text = "";
+
+            dtGridElements.Rows.Clear();
+            getElements();
+            populateDataGridElement();
+        }
     }
 }

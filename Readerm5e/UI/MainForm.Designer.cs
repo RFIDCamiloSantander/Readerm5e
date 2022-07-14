@@ -51,6 +51,8 @@
             this.btnElementos = new System.Windows.Forms.Button();
             this.btnEditElement = new System.Windows.Forms.Button();
             this.btnAutoWrite = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
+            this.lblAutoWriteState = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dtGridResults)).BeginInit();
             this.SuspendLayout();
             // 
@@ -284,11 +286,33 @@
             this.btnAutoWrite.UseVisualStyleBackColor = true;
             this.btnAutoWrite.Click += new System.EventHandler(this.btnAutoWrite_Click);
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(157, 376);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(76, 13);
+            this.label2.TabIndex = 18;
+            this.label2.Text = "Auto-Escritura:";
+            // 
+            // lblAutoWriteState
+            // 
+            this.lblAutoWriteState.AutoSize = true;
+            this.lblAutoWriteState.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblAutoWriteState.ForeColor = System.Drawing.Color.Red;
+            this.lblAutoWriteState.Location = new System.Drawing.Point(229, 376);
+            this.lblAutoWriteState.Name = "lblAutoWriteState";
+            this.lblAutoWriteState.Size = new System.Drawing.Size(78, 13);
+            this.lblAutoWriteState.TabIndex = 19;
+            this.lblAutoWriteState.Text = "Desactivado";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(832, 398);
+            this.Controls.Add(this.lblAutoWriteState);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.btnAutoWrite);
             this.Controls.Add(this.btnEditElement);
             this.Controls.Add(this.btnElementos);
@@ -340,6 +364,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn lastSeenDate;
         private System.Windows.Forms.DataGridViewTextBoxColumn Descripcion;
         private System.Windows.Forms.Button btnAutoWrite;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lblAutoWriteState;
     }
 }
 

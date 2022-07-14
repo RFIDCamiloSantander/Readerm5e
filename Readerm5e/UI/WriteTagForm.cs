@@ -9,8 +9,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+//using System.Windows;
 using System.Windows.Forms;
 using ThingMagic;
+using MessageBox = System.Windows.MessageBox;
 
 namespace Readerm5e.UI
 {
@@ -51,9 +53,13 @@ namespace Readerm5e.UI
 
         private void btnWriteEpc_Click(object sender, EventArgs e)
         {
-            if (((txtWriteEpc.Text.Length % 4) != 0) || txtWriteEpc.Text.Contains(" ")) //Valida el largo del EPC y que no tenga espacios en blanco.
+            if (validateHexEpc(txtWriteEpc.Text.Trim()))
             {
-                System.Windows.MessageBox.Show("Por favor ingrese un EPC valido.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Diagnostics.Debug.WriteLine(validateHexEpc(txtWriteEpc.Text.Trim()));
+            }
+            if (((txtWriteEpc.Text.Length % 4) != 0) || txtWriteEpc.Text.Contains(" ") || validateHexEpc(txtWriteEpc.Text.Trim())) //Valida el largo del EPC, que no tenga espacios en blanco y que sea hex.
+            {
+                MessageBox.Show("Por favor ingrese un EPC valido.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             else
             {
@@ -61,13 +67,38 @@ namespace Readerm5e.UI
 
                 if (element.Id == 0)
                 {
-                    objReader.WriteTag(null, new TagData(txtWriteEpc.Text));
+                    try
+                    {
+                        objReader.WriteTag(null, new TagData(txtWriteEpc.Text));
+                    }
+                    catch (Exception err)
+                    {
+                        MessageBox.Show(err.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        System.Diagnostics.Debug.WriteLine(err.Message);
+                        //throw;
+                    }
                 }
                 else
                 {
                     System.Windows.MessageBox.Show("El EPC ya esta asociado a un elemento.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
+        }
+
+
+        private bool validateHexEpc(string Epc)
+        {
+            bool isHex = true;
+            foreach (char c in Epc)
+            {
+                isHex = ((c >= '0' && c <= '9') ||
+                 (c >= 'a' && c <= 'f') ||
+                 (c >= 'A' && c <= 'F'));
+
+                if (!isHex)
+                    return false;
+            }
+            return isHex;
         }
     }
 }
