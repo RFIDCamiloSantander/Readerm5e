@@ -34,7 +34,6 @@
             this.btnReadEpc = new System.Windows.Forms.Button();
             this.btnWriteEpc = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
-            this.lblResult = new System.Windows.Forms.Label();
             this.txtReadEpc = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
@@ -92,15 +91,6 @@
             this.label3.TabIndex = 6;
             this.label3.Text = "Escribir Tag";
             // 
-            // lblResult
-            // 
-            this.lblResult.AutoSize = true;
-            this.lblResult.Location = new System.Drawing.Point(117, 148);
-            this.lblResult.Name = "lblResult";
-            this.lblResult.Size = new System.Drawing.Size(84, 13);
-            this.lblResult.TabIndex = 7;
-            this.lblResult.Text = "Label Resultado";
-            // 
             // txtReadEpc
             // 
             this.txtReadEpc.BorderStyle = System.Windows.Forms.BorderStyle.None;
@@ -114,9 +104,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(339, 186);
+            this.ClientSize = new System.Drawing.Size(339, 173);
             this.Controls.Add(this.txtReadEpc);
-            this.Controls.Add(this.lblResult);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.btnWriteEpc);
             this.Controls.Add(this.btnReadEpc);
@@ -124,6 +113,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Name = "WriteTagForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "WriteTagForm";
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -138,7 +128,6 @@
         private System.Windows.Forms.Button btnReadEpc;
         private System.Windows.Forms.Button btnWriteEpc;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label lblResult;
         private System.Windows.Forms.TextBox txtReadEpc;
     }
 }
