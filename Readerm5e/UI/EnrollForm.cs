@@ -44,10 +44,22 @@ namespace Readerm5e.UI
                 tagList = objReader.Read(100);
             }
 
-
-            foreach (TagReadData tag in tagList)
+            if (tagList.Length == 0)
             {
-                txtEpc.Text = tag.EpcString;
+                MessageBox.Show("No se leyeron Tags.", "Error");
+            }
+
+            if (tagList.Length > 1)
+            {
+                MessageBox.Show("Se ha leído mas de un Tag.", "Error");
+            }
+
+            if (tagList.Length == 1)
+            {
+                foreach (TagReadData tag in tagList)
+                {
+                    txtEpc.Text = tag.EpcString;
+                }
             }
         }
 

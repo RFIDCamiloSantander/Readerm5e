@@ -92,6 +92,7 @@ namespace Readerm5e.UI
             }
         }
 
+
         private void btnCleanFilters_Click(object sender, EventArgs e)
         {
             txtFilterEpc.Text = "";

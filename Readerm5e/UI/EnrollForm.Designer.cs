@@ -133,6 +133,7 @@ namespace Readerm5e.UI
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Name = "EnrollForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Enrolar";
             this.ResumeLayout(false);
             this.PerformLayout();

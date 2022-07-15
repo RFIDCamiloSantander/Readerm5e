@@ -120,6 +120,8 @@ namespace Readerm5e
                     //es necesario setear la region para poder iniciar lecturas
                     objReader.ParamSet("/reader/region/id", Reader.Region.NA);
 
+                    objReader.ParamSet("/reader/radio/readPower", trackBarReadPower.Value * 100);
+
 
                     System.Diagnostics.Debug.WriteLine(JsonConvert.SerializeObject(readerUri));
                     System.Diagnostics.Debug.WriteLine(JsonConvert.SerializeObject(objReader));
@@ -249,10 +251,22 @@ namespace Readerm5e
                         tagList = objReader.Read(100);
                     }
 
-
-                    foreach (TagReadData tag in tagList)
+                    if (tagList.Length == 0)
                     {
-                        lblEPC.Text = tag.EpcString;
+                        MessageBox.Show("No se leyeron Tags.", "Error");
+                    }
+
+                    if (tagList.Length > 1)
+                    {
+                        MessageBox.Show("Se ha leído mas de un Tag.", "Error");
+                    }
+
+                    if (tagList.Length == 1)
+                    {
+                        foreach (TagReadData tag in tagList)
+                        {
+                            lblEPC.Text = tag.EpcString;
+                        }
                     }
                 }
                 catch (Exception err)
@@ -572,6 +586,15 @@ namespace Readerm5e
                     SendKeys.SendWait(e.TagReadData.EpcString + "{ENTER}");
                     lastWrote = e.TagReadData;
                 }
+            }
+        }
+
+
+        private void trackBarReadPower_Scroll(object sender, EventArgs e)
+        {
+            if (objReader != null)
+            {
+                objReader.ParamSet("/reader/radio/readPower", trackBarReadPower.Value * 100);
             }
         }
     }
