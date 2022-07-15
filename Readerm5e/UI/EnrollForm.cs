@@ -55,9 +55,9 @@ namespace Readerm5e.UI
         {
             Element element = new Element()
             {
-                EPC = txtEpc.Text,
-                Name = txtName.Text,
-                Description = txtDescription.Text,
+                EPC = txtEpc.Text.ToLower(),
+                Name = txtName.Text.ToLower(),
+                Description = txtDescription.Text.ToLower(),
                 CreationDate = Convert.ToString(DateTime.Now.ToString()),
                 Status = null,
             };

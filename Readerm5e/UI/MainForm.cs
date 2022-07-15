@@ -340,34 +340,6 @@ namespace Readerm5e
 
             MyThread = new Thread(new ThreadStart(ThreadFunction));
             MyThread.Start();
-
-            //if (!tagList.Exists(tag => tag.TagReadData.EpcString == e.TagReadData.EpcString))//Si el epc ya fue agregado a la lista
-            //{
-            //    tagList.Add(e);
-            //    resp = e;
-            //    MyThread = new Thread(new ThreadStart(ThreadFunction));
-            //    MyThread.Start();
-            //}
-            //else
-            //{
-            //    TagReadDataEventArgs tag = tagList.Find( t => t.TagReadData.EpcString == e.TagReadData.EpcString);
-
-            //    //Tengo que hacer el if para que se elimine el epc de la lista si ya pasaron mas de 5 segs.
-            //    if (DateTime.Compare(tag.TagReadData.Time.AddSeconds(5), e.TagReadData.Time) < 0)
-            //    {
-            //        int fnd = tagList.FindIndex(t => t.TagReadData.EpcString == e.TagReadData.EpcString);
-            //        tagList[fnd].TagReadData.ReadCount += e.TagReadData.ReadCount;
-
-
-            //        //tagList.Remove(tag);
-            //        tagList.Add(e);
-
-            //        resp = e;
-
-            //        MyThread = new Thread(new ThreadStart(ThreadFunction));
-            //        MyThread.Start();
-            //    }
-            //}
             
             //Da error pq se manipula el dataGrid desde otro subproceso, no el que lo creo.
             //dtGridResults.Rows.Add(e.TagReadData.EpcString);
@@ -552,9 +524,19 @@ namespace Readerm5e
                 }
                 else
                 {
-                    objReader.TagRead -= autoWrite;
-                    lblAutoWriteState.Text = "Desactivado";
-                    lblAutoWriteState.ForeColor = Color.Red;
+                    if (isReading)
+                    {
+                        objReader.TagRead -= autoWrite;
+                        lblAutoWriteState.Text = "Desactivado";
+                        lblAutoWriteState.ForeColor = Color.Red;
+                    }
+                    else
+                    {
+                        objReader.TagRead -= autoWrite;
+                        objReader.StopReading();
+                        lblAutoWriteState.Text = "Desactivado";
+                        lblAutoWriteState.ForeColor = Color.Red;
+                    }
                 }
             }
             else
